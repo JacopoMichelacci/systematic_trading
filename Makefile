@@ -9,7 +9,7 @@ ARENA_URL ?= https://arena.example.edu
 export PYTHONPATH := engine:.
 
 install:
-	pip install -r requirements.txt
+	uv sync
 
 register:
 	python scripts/create_team.py --remote $(ARENA_URL)

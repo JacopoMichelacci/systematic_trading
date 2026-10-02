@@ -1,0 +1,23 @@
+[project]
+name = "algoarena-team"
+version = "0.1.0"
+description = "AlgoArena student team environment"
+requires-python = ">=3.11"
+dependencies = [
+    "websockets>=12.0,<16.0",
+    "pydantic>=2.0,<3.0",
+    "yfinance>=0.2",
+    "rich>=13.0,<16.0",
+    "python-pptx>=0.6.23",
+    "anthropic>=0.40",
+    "PyYAML>=6.0",
+    "numpy>=1.26,<3.0",
+    "pandas>=2.0,<3.0",
+    "pytest>=7.0,<11.0",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.4",
+]
+
+[tool.uv]
+# This repository runs scripts and modules directly; it is not an installable package.
+package = false

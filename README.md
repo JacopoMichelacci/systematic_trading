@@ -31,7 +31,7 @@ the teacher can see it. Never fork or push to the template itself.
 ## 1. Set up
 
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
 
 ## 2. Register your team

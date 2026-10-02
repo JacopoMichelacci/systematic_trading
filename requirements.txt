@@ -1,5 +1,6 @@
-# AlgoArena — pinned dependencies
-# Install with: pip install -r requirements.txt
+# AlgoArena — legacy pip dependency list
+# Project installs use `uv sync` from pyproject.toml and uv.lock.
+# This file remains for pip-only environments; keep its requirements aligned with pyproject.toml.
 # Python 3.11+ required (uses match statements and 3.11 asyncio features).
 
 # ── Core networking ───────────────────────────────────────────────────────────

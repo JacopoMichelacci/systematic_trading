@@ -12,7 +12,7 @@ Follow these steps regardless of your role (Exchange, Broker, or Trader).
 ## Step 1 — Install dependencies
 
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
 
 Python 3.11 or later is required.
