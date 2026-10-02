@@ -10,3 +10,5 @@ sessions/
 
 # Secrets — your team token. NEVER commit this.
 .env
+
+personal/
