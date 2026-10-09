@@ -12,3 +12,6 @@ sessions/
 .env
 
 personal/
+
+# Bot logs (team/trader.py writes logs/<TEAM_ID>.log)
+logs/
