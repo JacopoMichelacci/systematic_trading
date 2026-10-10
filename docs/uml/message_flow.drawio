@@ -1,0 +1,91 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="yAmtmO04pE-onzaLuilr">
+    <mxGraphModel dx="1139" dy="785" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ryB24NBFoLwoKBaaw2OP-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;b&gt;MyTrader&lt;/b&gt;&lt;div&gt;running inside TraderBot&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="190" x="70" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="ryB24NBFoLwoKBaaw2OP-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;" value="&lt;b&gt;Exchange venue&lt;/b&gt;&lt;div&gt;wss://feed.algoarena-st.duckdns.org&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="210" x="950" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="ryB24NBFoLwoKBaaw2OP-3" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontStyle=1" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;message flow for one Level 1 trade&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="310" x="440" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="ryB24NBFoLwoKBaaw2OP-8" edge="1" parent="1" source="ryB24NBFoLwoKBaaw2OP-2" style="endArrow=classic;html=1;rounded=0;elbow=vertical;curved=1;exitX=0.536;exitY=0.006;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="ryB24NBFoLwoKBaaw2OP-1" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="530" y="110" />
+            </Array>
+            <mxPoint x="580" y="240" as="sourcePoint" />
+            <mxPoint x="560" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ryB24NBFoLwoKBaaw2OP-9" edge="1" parent="1" source="ryB24NBFoLwoKBaaw2OP-1" style="endArrow=classic;html=1;rounded=0;elbow=vertical;curved=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" target="ryB24NBFoLwoKBaaw2OP-2" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="530" y="260" />
+            </Array>
+            <mxPoint x="540" y="320" as="sourcePoint" />
+            <mxPoint x="590" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ryB24NBFoLwoKBaaw2OP-10" edge="1" parent="1" source="ryB24NBFoLwoKBaaw2OP-2" style="endArrow=classic;html=1;rounded=0;elbow=vertical;curved=1;entryX=1;entryY=1;entryDx=0;entryDy=0;exitX=0;exitY=1;exitDx=0;exitDy=0;" target="ryB24NBFoLwoKBaaw2OP-1" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="530" y="360" />
+            </Array>
+            <mxPoint x="540" y="320" as="sourcePoint" />
+            <mxPoint x="590" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ryB24NBFoLwoKBaaw2OP-11" edge="1" parent="1" source="ryB24NBFoLwoKBaaw2OP-2" style="endArrow=classic;html=1;rounded=0;elbow=vertical;curved=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="ryB24NBFoLwoKBaaw2OP-1" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="610" y="490" />
+            </Array>
+            <mxPoint x="580" y="320" as="sourcePoint" />
+            <mxPoint x="330" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ryB24NBFoLwoKBaaw2OP-14" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="① Handshake {team_id, role=trader, level, token}" vertex="1">
+          <mxGeometry height="30" width="340" x="425" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ryB24NBFoLwoKBaaw2OP-15" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="② BookSnapshot {symbol, bids, asks, mid_price, spread}&amp;nbsp; → MarketData.update_book()" vertex="1">
+          <mxGeometry height="30" width="510" x="320" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="ryB24NBFoLwoKBaaw2OP-16" edge="1" parent="1" source="ryB24NBFoLwoKBaaw2OP-1" style="endArrow=classic;html=1;rounded=0;elbow=vertical;curved=1;entryX=0.75;entryY=0;entryDx=0;entryDy=0;exitX=0.25;exitY=0;exitDx=0;exitDy=0;" target="ryB24NBFoLwoKBaaw2OP-2" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="550" y="-60" />
+            </Array>
+            <mxPoint x="140" y="240" as="sourcePoint" />
+            <mxPoint x="800" y="180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ryB24NBFoLwoKBaaw2OP-17" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="③ PlaceOrder {symbol, side=buy, order_type=limit, price=best ask, quantity=1}&amp;nbsp; ← built from on_tick()&#39;s Signal" vertex="1">
+          <mxGeometry height="30" width="620" x="290" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="ryB24NBFoLwoKBaaw2OP-18" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="④ OrderAck {order_id, symbol, side, price, quantity}" vertex="1">
+          <mxGeometry height="30" width="390" x="405" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="ryB24NBFoLwoKBaaw2OP-19" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="⑤ TradeExecution {buyer_id = our TEAM_ID, price, quantity, fee}&amp;nbsp; → on_fill()" vertex="1">
+          <mxGeometry height="30" width="460" x="400" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="ryB24NBFoLwoKBaaw2OP-22" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="CancelOrder {order_id}: client → venue, but sent by the broker engine only — the Level 1 trader never cancels" vertex="1">
+          <mxGeometry height="50" width="420" x="400" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="Xkcz8nlu6HqWbhSE9YXw-1" edge="1" parent="1" source="ryB24NBFoLwoKBaaw2OP-1" style="endArrow=block;dashed=1;endFill=0;endSize=12;html=1;rounded=0;elbow=vertical;curved=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.845;entryY=1.035;entryDx=0;entryDy=0;" target="ryB24NBFoLwoKBaaw2OP-2" value="">
+          <mxGeometry relative="1" width="160" as="geometry">
+            <Array as="points">
+              <mxPoint x="620" y="680" />
+            </Array>
+            <mxPoint x="540" y="410" as="sourcePoint" />
+            <mxPoint x="700" y="410" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

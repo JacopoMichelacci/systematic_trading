@@ -1,13 +1,12 @@
-# UML — where each box lives
+# Where each box in the diagram lives
 
-`class_diagram.png` (classes) and `message_flow.png` (wire messages, in time order) were drawn in draw.io.
+We drew `class_diagram.png` and `message_flow.png` in draw.io (sources are the `.drawio` files here).
 
 | Box | File |
 |---|---|
-| `Trader` («abstract» ABC), `Broker`, `Exchange` | `arena/trader.py:25`, `arena/broker.py:25`, `arena/exchange.py:26` |
-| `MyTrader`, `MyBroker` (our subclasses) | `team/trader.py:36`, `team/broker.py:18` |
-| `TraderBot` (started by `Trader.run()`), `MarketData`, `Portfolio` | `engine/trader/trader.py:638`, `:100`, `:229` |
-| `Signal` | `engine/shared/messages.py:344` |
-| Wire messages: `Handshake`, `PlaceOrder`, `CancelOrder`, `OrderAck`, `BookSnapshot`, `TradeExecution` | `engine/shared/messages.py:50`, `:60`, `:76`, `:180`, `:253`, `:234` |
+| `Trader`, `Broker`, `Exchange` | `arena/trader.py`, `arena/broker.py`, `arena/exchange.py` |
+| `MyTrader`, `MyBroker` (our subclasses) | `team/trader.py`, `team/broker.py` |
+| `TraderBot`, `MarketData`, `Portfolio` | `engine/trader/trader.py` |
+| `Signal` and the wire messages | `engine/shared/messages.py` |
 
-Only `Trader` is an ABC (`on_tick` is its one `@abstractmethod`); `Broker` and `Exchange` are concrete bases whose hooks all have defaults.
+Only `Trader` is actually an abstract class. `Broker` and `Exchange` are normal base classes where every hook already has a default.
