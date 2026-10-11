@@ -1,0 +1,147 @@
+14:45:38 INFO    trader.trader: Connecting to wss://feed.algoarena-st.duckdns.org (EXCHANGE_URL from the shell)
+14:45:38 INFO    trader.trader: Connected to wss://feed.algoarena-st.duckdns.org as butter_chicken_pasta_trader_1 (trader)
+14:45:38 INFO    trader.trader: Session event: FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps
+14:45:38 INFO    team.trader: EVENT FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps {'port': 8765, 'taker': 0.003, 'rebate': 0.0005, 'net': 0.0025, 'old': {'taker': 0.003, 'rebate': 0.0005}, 'new': {'taker': 0.003, 'rebate': 0.0005}}
+14:45:38 INFO    trader.trader: Session event: SESSION_OPEN — Session already open — you joined mid-session.
+14:45:39 INFO    team.trader: Level 1 order 1/3: BUY 1 MSFT @ 411.39 (best ask)
+14:45:39 DEBUG   trader.trader: Placed: buy 1 MSFT @ 411.3900
+14:45:39 DEBUG   trader.trader: Ack: buy 1 MSFT @ 411.3900
+14:45:39 INFO    trader.trader: Fill: bought 1 MSFT @ 411.3900 (fee=0.6171)
+14:45:39 INFO    team.trader: FILL BUY 1 MSFT @ 411.39
+14:45:39 DEBUG   trader.trader: Portfolio: net_worth=296561.27
+15:30:00 INFO    trader.trader: Session event: SESSION_CLOSED — Trading session is now CLOSED. Flatten positions.
+15:30:00 INFO    trader.trader: Flattening: sell 5 AAPL at market
+15:30:00 INFO    trader.trader: Flattening: sell 8 MSFT at market
+15:30:00 INFO    trader.trader: Flattening: sell 5 NVDA at market
+15:30:00 INFO    trader.trader: Flattening: sell 5 TSLA at market
+15:30:00 INFO    trader.trader: Flattening: sell 5 AMZN at market
+15:30:00 INFO    trader.trader: Flattening: sell 5 GOOGL at market
+15:30:00 INFO    trader.trader: Flattening: sell 5 META at market
+15:30:00 INFO    trader.trader: Flattening: sell 5 NFLX at market
+15:30:00 INFO    trader.trader: Flattening: sell 5 AMD at market
+15:30:00 INFO    trader.trader: Flattening: sell 5 INTC at market
+15:30:00 WARNING trader.trader: Exchange error [SESSION_CLOSED]: Session not open — wait for SESSION_OPEN event
+15:30:00 WARNING trader.trader: Exchange error [SESSION_CLOSED]: Session not open — wait for SESSION_OPEN event
+15:30:00 WARNING trader.trader: Exchange error [SESSION_CLOSED]: Session not open — wait for SESSION_OPEN event
+15:30:00 WARNING trader.trader: Exchange error [SESSION_CLOSED]: Session not open — wait for SESSION_OPEN event
+15:30:00 WARNING trader.trader: Exchange error [SESSION_CLOSED]: Session not open — wait for SESSION_OPEN event
+15:30:00 WARNING trader.trader: Exchange error [SESSION_CLOSED]: Session not open — wait for SESSION_OPEN event
+15:30:00 WARNING trader.trader: Exchange error [SESSION_CLOSED]: Session not open — wait for SESSION_OPEN event
+15:30:00 WARNING trader.trader: Exchange error [SESSION_CLOSED]: Session not open — wait for SESSION_OPEN event
+15:30:00 WARNING trader.trader: Exchange error [SESSION_CLOSED]: Session not open — wait for SESSION_OPEN event
+15:30:00 WARNING trader.trader: Exchange error [SESSION_CLOSED]: Session not open — wait for SESSION_OPEN event
+15:30:20 INFO    trader.trader: Session event: WEEK_CHANGED — Week 2: Season scoring begins — long-only while you master async
+15:30:20 INFO    team.trader: EVENT WEEK_CHANGED — Week 2: Season scoring begins — long-only while you master async {'week': 2, 'label': 'Season scoring begins — long-only while you master async', 'flags': {'shorts_allowed': False, 'post_only_allowed': False, 'circuit_breakers': False, 'cancellation_fees': False, 'latency_enabled': False, 'multi_venue': True, 'futures_enabled': False, 'purchase_window': False}, 'position_limit': 400, 'order_quota': None, 'maintenance_fraction': None, 'scoring_counts': True, 'config': {'OPENING_AUCTION_TICKS': 0, 'CLOSING_AUCTION': False, 'SSR_TRIGGER_PCT': 0, 'SHORT_LOCATE_CAP': 0, 'LULD_BAND_PCT': 0.1}, 'events': [{'kind': 'earnings', 'tick': 400, 'symbol': 'AAPL', 'magnitude_range': [0.03, 0.08]}, {'kind': 'econ_print', 'tick': 900, 'magnitude_range': [0.015, 0.03], 'market_wide': True}]}
+15:30:20 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+15:30:20 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 823629, 'week': 2, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+15:31:22 INFO    trader.trader: Session event: WEEK_CHANGED — Week 2: Season scoring begins — long-only while you master async
+15:31:22 INFO    team.trader: EVENT WEEK_CHANGED — Week 2: Season scoring begins — long-only while you master async {'week': 2, 'label': 'Season scoring begins — long-only while you master async', 'flags': {'shorts_allowed': False, 'post_only_allowed': False, 'circuit_breakers': False, 'cancellation_fees': False, 'latency_enabled': False, 'multi_venue': True, 'futures_enabled': False, 'purchase_window': False}, 'position_limit': 400, 'order_quota': None, 'maintenance_fraction': None, 'scoring_counts': True, 'config': {'OPENING_AUCTION_TICKS': 0, 'CLOSING_AUCTION': False, 'SSR_TRIGGER_PCT': 0, 'SHORT_LOCATE_CAP': 0, 'LULD_BAND_PCT': 0.1}, 'events': [{'kind': 'earnings', 'tick': 400, 'symbol': 'AAPL', 'magnitude_range': [0.03, 0.08]}, {'kind': 'econ_print', 'tick': 900, 'magnitude_range': [0.015, 0.03], 'market_wide': True}]}
+15:31:22 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+15:31:22 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 823690, 'week': 2, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+15:32:54 INFO    trader.trader: Session event: WEEK_CHANGED — Week 2: Season scoring begins — long-only while you master async
+15:32:54 INFO    team.trader: EVENT WEEK_CHANGED — Week 2: Season scoring begins — long-only while you master async {'week': 2, 'label': 'Season scoring begins — long-only while you master async', 'flags': {'shorts_allowed': False, 'post_only_allowed': False, 'circuit_breakers': False, 'cancellation_fees': False, 'latency_enabled': False, 'multi_venue': True, 'futures_enabled': False, 'purchase_window': False}, 'position_limit': 400, 'order_quota': None, 'maintenance_fraction': None, 'scoring_counts': True, 'config': {'OPENING_AUCTION_TICKS': 0, 'CLOSING_AUCTION': False, 'SSR_TRIGGER_PCT': 0, 'SHORT_LOCATE_CAP': 0, 'LULD_BAND_PCT': 0.1}, 'events': [{'kind': 'earnings', 'tick': 400, 'symbol': 'AAPL', 'magnitude_range': [0.03, 0.08]}, {'kind': 'econ_print', 'tick': 900, 'magnitude_range': [0.015, 0.03], 'market_wide': True}]}
+15:32:54 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+15:32:54 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 823781, 'week': 2, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+15:34:26 INFO    trader.trader: Session event: WEEK_CHANGED — Week 2: Season scoring begins — long-only while you master async
+15:34:26 INFO    team.trader: EVENT WEEK_CHANGED — Week 2: Season scoring begins — long-only while you master async {'week': 2, 'label': 'Season scoring begins — long-only while you master async', 'flags': {'shorts_allowed': False, 'post_only_allowed': False, 'circuit_breakers': False, 'cancellation_fees': False, 'latency_enabled': False, 'multi_venue': True, 'futures_enabled': False, 'purchase_window': False}, 'position_limit': 400, 'order_quota': None, 'maintenance_fraction': None, 'scoring_counts': True, 'config': {'OPENING_AUCTION_TICKS': 0, 'CLOSING_AUCTION': False, 'SSR_TRIGGER_PCT': 0, 'SHORT_LOCATE_CAP': 0, 'LULD_BAND_PCT': 0.1}, 'events': [{'kind': 'earnings', 'tick': 400, 'symbol': 'AAPL', 'magnitude_range': [0.03, 0.08]}, {'kind': 'econ_print', 'tick': 900, 'magnitude_range': [0.015, 0.03], 'market_wide': True}]}
+15:34:26 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+15:34:26 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 823872, 'week': 2, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+15:35:58 INFO    trader.trader: Session event: WEEK_CHANGED — Week 2: Season scoring begins — long-only while you master async
+15:35:58 INFO    team.trader: EVENT WEEK_CHANGED — Week 2: Season scoring begins — long-only while you master async {'week': 2, 'label': 'Season scoring begins — long-only while you master async', 'flags': {'shorts_allowed': False, 'post_only_allowed': False, 'circuit_breakers': False, 'cancellation_fees': False, 'latency_enabled': False, 'multi_venue': True, 'futures_enabled': False, 'purchase_window': False}, 'position_limit': 400, 'order_quota': None, 'maintenance_fraction': None, 'scoring_counts': True, 'config': {'OPENING_AUCTION_TICKS': 0, 'CLOSING_AUCTION': False, 'SSR_TRIGGER_PCT': 0, 'SHORT_LOCATE_CAP': 0, 'LULD_BAND_PCT': 0.1}, 'events': [{'kind': 'earnings', 'tick': 400, 'symbol': 'AAPL', 'magnitude_range': [0.03, 0.08]}, {'kind': 'econ_print', 'tick': 900, 'magnitude_range': [0.015, 0.03], 'market_wide': True}]}
+15:35:58 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+15:35:58 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 823964, 'week': 2, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+15:37:31 INFO    trader.trader: Session event: WEEK_CHANGED — Week 2: Season scoring begins — long-only while you master async
+15:37:31 INFO    team.trader: EVENT WEEK_CHANGED — Week 2: Season scoring begins — long-only while you master async {'week': 2, 'label': 'Season scoring begins — long-only while you master async', 'flags': {'shorts_allowed': False, 'post_only_allowed': False, 'circuit_breakers': False, 'cancellation_fees': False, 'latency_enabled': False, 'multi_venue': True, 'futures_enabled': False, 'purchase_window': False}, 'position_limit': 400, 'order_quota': None, 'maintenance_fraction': None, 'scoring_counts': True, 'config': {'OPENING_AUCTION_TICKS': 0, 'CLOSING_AUCTION': False, 'SSR_TRIGGER_PCT': 0, 'SHORT_LOCATE_CAP': 0, 'LULD_BAND_PCT': 0.1}, 'events': [{'kind': 'earnings', 'tick': 400, 'symbol': 'AAPL', 'magnitude_range': [0.03, 0.08]}, {'kind': 'econ_print', 'tick': 900, 'magnitude_range': [0.015, 0.03], 'market_wide': True}]}
+15:37:31 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+15:37:31 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 824055, 'week': 2, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+15:39:03 INFO    trader.trader: Session event: WEEK_CHANGED — Week 2: Season scoring begins — long-only while you master async
+15:39:03 INFO    team.trader: EVENT WEEK_CHANGED — Week 2: Season scoring begins — long-only while you master async {'week': 2, 'label': 'Season scoring begins — long-only while you master async', 'flags': {'shorts_allowed': False, 'post_only_allowed': False, 'circuit_breakers': False, 'cancellation_fees': False, 'latency_enabled': False, 'multi_venue': True, 'futures_enabled': False, 'purchase_window': False}, 'position_limit': 400, 'order_quota': None, 'maintenance_fraction': None, 'scoring_counts': True, 'config': {'OPENING_AUCTION_TICKS': 0, 'CLOSING_AUCTION': False, 'SSR_TRIGGER_PCT': 0, 'SHORT_LOCATE_CAP': 0, 'LULD_BAND_PCT': 0.1}, 'events': [{'kind': 'earnings', 'tick': 400, 'symbol': 'AAPL', 'magnitude_range': [0.03, 0.08]}, {'kind': 'econ_print', 'tick': 900, 'magnitude_range': [0.015, 0.03], 'market_wide': True}]}
+15:39:03 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+15:39:03 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 824146, 'week': 2, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+15:40:00 DEBUG   trader.trader: Portfolio: net_worth=316549.41
+15:40:00 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+15:40:00 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 824202, 'week': 2, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+15:40:00 INFO    trader.trader: Session event: SESSION_OPEN — Trading session is now OPEN. Bots activate!
+15:44:46 INFO    trader.trader: Session event: CALENDAR — Upcoming: earnings AAPL @ t400
+15:44:46 INFO    team.trader: EVENT CALENDAR — Upcoming: earnings AAPL @ t400 {'tick': 824482, 'week': 2, 'events': [], 'imminent': [{'kind': 'earnings', 'tick': 400, 'symbol': 'AAPL', 'magnitude_range': [0.03, 0.08]}], 'announce_lead': 120, 'early': False}
+15:46:52 INFO    trader.trader: Session event: CALENDAR_EVENT — Earnings: AAPL moving +6.2%
+15:46:52 INFO    team.trader: EVENT CALENDAR_EVENT — Earnings: AAPL moving +6.2% {'kind': 'earnings', 'symbol': 'AAPL', 'market_wide': False, 'pct': 0.061958, 'affected': ['AAPL'], 'ramp_ticks': 15, 'overshoot': 1.3, 'tick': 824602}
+15:48:01 INFO    trader.trader: Connecting to wss://feed.algoarena-st.duckdns.org (EXCHANGE_URL from the shell)
+15:48:01 INFO    trader.trader: Connected to wss://feed.algoarena-st.duckdns.org as butter_chicken_pasta_trader_1 (trader)
+15:48:01 INFO    trader.trader: Session event: FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps
+15:48:01 INFO    team.trader: EVENT FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps {'port': 8765, 'taker': 0.003, 'rebate': 0.0005, 'net': 0.0025, 'old': {'taker': 0.003, 'rebate': 0.0005}, 'new': {'taker': 0.003, 'rebate': 0.0005}}
+15:48:01 INFO    trader.trader: Session event: SESSION_OPEN — Session already open — you joined mid-session.
+15:48:02 INFO    team.trader: Level 1 order 1/3: BUY 1 MSFT @ 408.38 (best ask)
+15:48:02 DEBUG   trader.trader: Placed: buy 1 MSFT @ 408.3800
+15:48:02 DEBUG   trader.trader: Ack: buy 1 MSFT @ 408.3800
+15:48:02 INFO    trader.trader: Fill: bought 1 MSFT @ 408.3800 (fee=0.6126)
+15:48:02 INFO    team.trader: FILL BUY 1 MSFT @ 408.38
+15:48:02 DEBUG   trader.trader: Portfolio: net_worth=317009.58
+15:53:27 INFO    trader.trader: Session event: CALENDAR — Upcoming: econ_print MARKET @ t900
+15:53:27 INFO    team.trader: EVENT CALENDAR — Upcoming: econ_print MARKET @ t900 {'tick': 824982, 'week': 2, 'events': [], 'imminent': [{'kind': 'econ_print', 'tick': 900, 'market_wide': True, 'magnitude_range': [0.015, 0.03]}], 'announce_lead': 120, 'early': False}
+15:55:33 INFO    trader.trader: Session event: CALENDAR_EVENT — Econ Print: market-wide moving -2.0%
+15:55:33 INFO    team.trader: EVENT CALENDAR_EVENT — Econ Print: market-wide moving -2.0% {'kind': 'econ_print', 'symbol': None, 'market_wide': True, 'pct': -0.019661, 'affected': ['AAPL', 'MSFT', 'NVDA', 'TSLA', 'AMZN', 'GOOGL', 'META', 'NFLX', 'AMD', 'INTC', 'ARENA10'], 'ramp_ticks': 15, 'overshoot': 1.3, 'tick': 825102}
+16:30:01 INFO    trader.trader: Session event: SESSION_CLOSED — Trading session is now CLOSED. Flatten positions.
+16:30:01 INFO    trader.trader: Flattening: sell 10 AAPL at market
+16:30:01 INFO    trader.trader: Flattening: sell 14 MSFT at market
+16:30:01 INFO    trader.trader: Flattening: sell 10 NVDA at market
+16:30:01 INFO    trader.trader: Flattening: sell 10 TSLA at market
+16:30:01 INFO    trader.trader: Flattening: sell 10 AMZN at market
+16:30:01 INFO    trader.trader: Flattening: sell 10 GOOGL at market
+16:30:01 INFO    trader.trader: Flattening: sell 10 META at market
+16:30:01 INFO    trader.trader: Flattening: sell 10 NFLX at market
+16:30:01 INFO    trader.trader: Flattening: sell 10 AMD at market
+16:30:01 INFO    trader.trader: Flattening: sell 10 INTC at market
+16:30:02 WARNING trader.trader: Exchange error [SESSION_CLOSED]: Session not open — wait for SESSION_OPEN event
+16:30:02 WARNING trader.trader: Exchange error [SESSION_CLOSED]: Session not open — wait for SESSION_OPEN event
+16:30:02 WARNING trader.trader: Exchange error [SESSION_CLOSED]: Session not open — wait for SESSION_OPEN event
+16:30:02 WARNING trader.trader: Exchange error [SESSION_CLOSED]: Session not open — wait for SESSION_OPEN event
+16:30:02 WARNING trader.trader: Exchange error [SESSION_CLOSED]: Session not open — wait for SESSION_OPEN event
+16:30:02 WARNING trader.trader: Exchange error [SESSION_CLOSED]: Session not open — wait for SESSION_OPEN event
+16:30:02 WARNING trader.trader: Exchange error [SESSION_CLOSED]: Session not open — wait for SESSION_OPEN event
+16:30:02 WARNING trader.trader: Exchange error [SESSION_CLOSED]: Session not open — wait for SESSION_OPEN event
+16:30:02 WARNING trader.trader: Exchange error [SESSION_CLOSED]: Session not open — wait for SESSION_OPEN event
+16:30:02 WARNING trader.trader: Exchange error [SESSION_CLOSED]: Session not open — wait for SESSION_OPEN event
+16:30:20 INFO    trader.trader: Session event: WEEK_CHANGED — Week 0: Open play
+16:30:20 INFO    team.trader: EVENT WEEK_CHANGED — Week 0: Open play {'week': 0, 'label': 'Open play', 'flags': {'shorts_allowed': True, 'post_only_allowed': True, 'circuit_breakers': False, 'cancellation_fees': False, 'latency_enabled': False, 'multi_venue': True, 'futures_enabled': False, 'purchase_window': False}, 'position_limit': None, 'order_quota': None, 'maintenance_fraction': None, 'scoring_counts': False, 'config': {}, 'events': []}
+16:30:20 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+16:30:20 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 827045, 'week': 0, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+16:30:20 DEBUG   trader.trader: Portfolio: net_worth=336949.84
+16:30:20 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+16:30:20 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 827046, 'week': 0, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+16:30:20 INFO    trader.trader: Session event: SESSION_OPEN — Trading session is now OPEN. Bots activate!
+16:36:18 WARNING trader.trader: Exchange connection closed: sent 1011 (internal error) keepalive ping timeout; no close frame received — reconnecting in 3s
+16:36:21 INFO    trader.trader: Connected to wss://feed.algoarena-st.duckdns.org as butter_chicken_pasta_trader_1 (trader)
+16:36:21 INFO    trader.trader: Session event: FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps
+16:36:21 INFO    team.trader: EVENT FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps {'port': 8765, 'taker': 0.003, 'rebate': 0.0005, 'net': 0.0025, 'old': {'taker': 0.003, 'rebate': 0.0005}, 'new': {'taker': 0.003, 'rebate': 0.0005}}
+16:36:21 INFO    trader.trader: Session event: SESSION_OPEN — Session already open — you joined mid-session.
+17:27:50 WARNING trader.trader: Exchange connection closed: sent 1011 (internal error) keepalive ping timeout; no close frame received — reconnecting in 3s
+17:27:53 WARNING trader.trader: Could not reach exchange: [Errno 8] nodename nor servname provided, or not known — retrying in 3s
+17:27:56 WARNING trader.trader: Could not reach exchange: [Errno 8] nodename nor servname provided, or not known — retrying in 3s
+17:29:34 WARNING trader.trader: Could not reach exchange: [Errno 8] nodename nor servname provided, or not known — retrying in 3s
+17:29:37 WARNING trader.trader: Could not reach exchange: [Errno 8] nodename nor servname provided, or not known — retrying in 3s
+17:29:40 WARNING trader.trader: Could not reach exchange: [Errno 8] nodename nor servname provided, or not known — retrying in 3s
+17:29:43 WARNING trader.trader: Could not reach exchange: [Errno 8] nodename nor servname provided, or not known — retrying in 3s
+17:45:46 INFO    trader.trader: Connected to wss://feed.algoarena-st.duckdns.org as butter_chicken_pasta_trader_1 (trader)
+17:45:46 INFO    trader.trader: Session event: FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps
+17:45:46 INFO    team.trader: EVENT FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps {'port': 8765, 'taker': 0.003, 'rebate': 0.0005, 'net': 0.0025, 'old': {'taker': 0.003, 'rebate': 0.0005}, 'new': {'taker': 0.003, 'rebate': 0.0005}}
+17:45:46 INFO    trader.trader: Session event: SESSION_OPEN — Session already open — you joined mid-session.
+18:02:33 WARNING trader.trader: Exchange connection closed: no close frame received or sent — reconnecting in 3s
+18:02:36 INFO    trader.trader: Connected to wss://feed.algoarena-st.duckdns.org as butter_chicken_pasta_trader_1 (trader)
+18:02:36 INFO    trader.trader: Session event: FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps
+18:02:36 INFO    team.trader: EVENT FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps {'port': 8765, 'taker': 0.003, 'rebate': 0.0005, 'net': 0.0025, 'old': {'taker': 0.003, 'rebate': 0.0005}, 'new': {'taker': 0.003, 'rebate': 0.0005}}
+18:02:36 INFO    trader.trader: Session event: SESSION_OPEN — Session already open — you joined mid-session.
+18:17:52 WARNING trader.trader: Exchange connection closed: no close frame received or sent — reconnecting in 3s
+18:17:55 WARNING trader.trader: Could not reach exchange: [Errno 8] nodename nor servname provided, or not known — retrying in 3s
+18:17:58 WARNING trader.trader: Could not reach exchange: [Errno 8] nodename nor servname provided, or not known — retrying in 3s
+18:18:01 WARNING trader.trader: Could not reach exchange: [Errno 8] nodename nor servname provided, or not known — retrying in 3s
+18:18:04 WARNING trader.trader: Could not reach exchange: [Errno 8] nodename nor servname provided, or not known — retrying in 3s
+18:18:08 INFO    trader.trader: Connected to wss://feed.algoarena-st.duckdns.org as butter_chicken_pasta_trader_1 (trader)
+18:18:08 INFO    trader.trader: Session event: FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps
+18:18:08 INFO    team.trader: EVENT FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps {'port': 8765, 'taker': 0.003, 'rebate': 0.0005, 'net': 0.0025, 'old': {'taker': 0.003, 'rebate': 0.0005}, 'new': {'taker': 0.003, 'rebate': 0.0005}}
+18:18:08 INFO    trader.trader: Session event: SESSION_OPEN — Session already open — you joined mid-session.
+18:23:20 WARNING trader.trader: Exchange connection closed: sent 1011 (internal error) keepalive ping timeout; no close frame received — reconnecting in 3s
+18:23:23 INFO    trader.trader: Connected to wss://feed.algoarena-st.duckdns.org as butter_chicken_pasta_trader_1 (trader)
+18:23:23 INFO    trader.trader: Session event: FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps
+18:23:23 INFO    team.trader: EVENT FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps {'port': 8765, 'taker': 0.003, 'rebate': 0.0005, 'net': 0.0025, 'old': {'taker': 0.003, 'rebate': 0.0005}, 'new': {'taker': 0.003, 'rebate': 0.0005}}
+18:23:23 INFO    trader.trader: Session event: SESSION_OPEN — Session already open — you joined mid-session.
