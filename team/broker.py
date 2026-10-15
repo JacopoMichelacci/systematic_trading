@@ -19,15 +19,14 @@ class MyBroker(Broker):
     """Your market-making logic. An empty subclass already quotes."""
 
     def spread(self, symbol, price, history):
-        # TODO Level 3: widen your quotes when the market gets choppy.
-        # `history` is the recent reference prices, oldest first.
-        # Return the dollar width, or None for the fixed default.
-        return None
+        if (len(history) < 25):
+            return None
+        moves = [abs(b-a) for a, b in zip(history, history[1:])]
+        vol = sum(moves[-20:]) / 20
+        return max(0.05, vol * 4)
 
     def skew(self, symbol, inventory):
-        # TODO Level 4: shift both quotes to flatten your inventory.
-        # Long (inventory > 0) → quote lower to attract sellers.
-        return None
+        return -inventory * 0.02
 
     # Optional extra hooks:
     #   def toxic(self, trader_id): ...                 # Level 5
