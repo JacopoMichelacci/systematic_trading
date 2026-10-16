@@ -1,270 +1,154 @@
-"""
-butter_chicken_pasta — trader bot (Level 1).
+"""Week 3 long-only trader for butter_chicken_pasta.
 
-Level 1 goal: handshake, place ONE small, legal buy order that the exchange
-acknowledges and fills, then sit out for the rest of the session.
+Primary objective: react to the real NVDA/TSLA earnings events with a
+small, legal BUY within the event window, while never submitting a sell.
 
-The order is a marketable limit: a buy priced at the current best ask, so it
-fills against resting liquidity instead of waiting in the book. If no fill
-arrives within RETRY_AFTER_TICKS ticks, the bot tries again, at most
-MAX_ATTEMPTS times — the cap bounds the worst case at MAX_ATTEMPTS × QUANTITY
-shares even if every resting order eventually fills.
+Run: TEAM_ID=butter_chicken_pasta_trader_1 python -m team.trader
 
-Run one seat:
-    TEAM_ID=butter_chicken_pasta_trader_1 python -m team.trader
-
-Logs go to the terminal and to logs/<TEAM_ID>.log (gitignored).
+NOTE: ``CALENDAR`` announces *future* events. ``CALENDAR_EVENT`` is emitted
+when scheduled earnings actually fire; ``SHOCK`` is for injected shocks.
 """
 
 from __future__ import annotations
 
 import logging
+import math
 import os
 import pathlib
-import math
 
 from arena import Signal, Trader
 
 logger = logging.getLogger("team.trader")
 
-# ── Level 1 tunables ─────────────────────────────────────────────────────────
-PREFERRED_SYMBOL = "MSFT"   # not AAPL: Session 2 has an earnings shock on AAPL
-QUANTITY = 1                # shares per order — deliberately tiny
-MAX_ATTEMPTS = 3            # orders sent before giving up for the session
-RETRY_AFTER_TICKS = 30      # ticks to wait for a fill before retrying
+PREFERRED_SYMBOL = "MSFT"
+QUANTITY = 1
+MAX_MOMENTUM_ORDERS = 3
+# Account for venue taker fees and stale best-ask prices, rather than relying
+# on Portfolio.can_buy's smaller 0.1% buffer alone.
+BUY_CASH_BUFFER = 1.01
+EVENT_SYMBOLS = frozenset(("NVDA", "TSLA"))
 
 
 class MyTrader(Trader):
-    """Level 1 trader: one small marketable buy, then sit out."""
+    """Week 3: BUY-only, with earnings reactions ahead of momentum trading."""
 
     def __init__(self) -> None:
-        self.attempts: int = 0
-        self.filled: bool = False
-        self.ticks_since_order: int = 0
+        self.pending_events: list[dict] = []
+        self.seen_events: set[tuple] = set()
+        self.last_momentum_signal: tuple | None = None
+        self.momentum_orders: int = 0
 
-        # W3: pending earnings shock
-        self.pending_events = []
-        self.seen_events = set()
-        self.last_momentum_signal = None
-        self.momentum_orders = 0
+    @staticmethod
+    def _safe_buy(market, portfolio, symbol: str) -> Signal | None:
+        """Return a 1-share marketable limit BUY only when it is affordable.
 
-    def momentum_strategy(self, market, portfolio) -> Signal | None:
-        if self.momentum_orders >= 3:
+        No sell signal can be constructed here, even for a negative shock.
+        """
+        ask = market.best_ask(symbol)
+        if (not isinstance(ask, (int, float)) or isinstance(ask, bool)
+                or not math.isfinite(ask) or ask <= 0):
             return None
-        symbol = "MSFT"
-        prices = market.prices(symbol)
-
-        if len(prices) < 21:
+        if (not isinstance(portfolio.cash, (int, float))
+                or not math.isfinite(portfolio.cash)
+                or portfolio.cash < ask * QUANTITY * BUY_CASH_BUFFER):
             return None
-
-        prev_ma5 = sum(prices[-6:-1]) / 5
-        prev_ma20 = sum(prices[-21:-1]) / 20
-
-        ma5 = sum(prices[-5:]) / 5
-        ma20 = sum(prices[-20:]) / 20
-
-        side = None
-
-        if prev_ma5 <= prev_ma20 and ma5 > ma20:
-            side = "buy"
-
-        elif prev_ma5 >= prev_ma20 and ma5 < ma20:
-            side = "sell"
-
-        if side is None:
+        if not portfolio.can_buy(symbol, QUANTITY, ask):
             return None
-
-        # Avoid repeating the same crossover on unchanged data.
-        signature = (side, tuple(prices[-21:]))
-
-        if signature == self.last_momentum_signal:
-            return None
-
-        if side == "buy":
-            price = market.best_ask(symbol)
-
-            if price is None or price <= 0:
-                return None
-
-            if not portfolio.can_buy(symbol, 1, price):
-                return None
-
-        else:
-            price = market.best_bid(symbol)
-
-            if price is None or price <= 0:
-                return None
-
-            if not portfolio.can_sell(symbol, 1):
-                return None
-
-        self.last_momentum_signal = signature
-
-        logger.info(
-            "MOMENTUM %s 1 %s @ %.2f",
-            side.upper(), symbol, price
-        )
-        self.momentum_orders += 1
-        return Signal(
-            symbol=symbol,
-            side=side,
-            quantity=1,
-            price=price
-        )
-
+        return Signal(symbol=symbol, side="buy", quantity=QUANTITY, price=ask)
 
     def handle_shock(self, market, portfolio) -> Signal | None:
-        """React to the earliest pending NVDA/TSLA shock."""
-
+        """Act on the earliest *fired* event. Retain it until an order is sent."""
         if not self.pending_events:
             return None
-
         shock = self.pending_events[0]
-        symbol = shock["symbol"]
-        pct = shock["pct"]
+        signal = self._safe_buy(market, portfolio, shock["symbol"])
+        if signal is None:
+            # No bid/ask or insufficient cash: don't attempt a doomed order.
+            logger.debug("Shock %s pending: no affordable ask yet", shock["symbol"])
+            return None
+        self.pending_events.pop(0)
+        logger.info("SHOCK RESPONSE: BUY %d %s @ %.2f (event=%s, pct=%s)",
+                    signal.quantity, signal.symbol, signal.price,
+                    shock["event"], shock["pct"])
+        return signal
 
-        # Use direction only when the event provides a valid pct.
-        if isinstance(pct, (int, float)) and not isinstance(pct, bool):
-            if not math.isfinite(pct):
-                pct = None
-        else:
-            pct = None
-
-        # Positive earnings: prefer buying.
-        # Negative earnings: prefer selling existing holdings.
-        # Unknown direction: make a small, legal fallback trade.
-        if pct is not None and pct < 0:
-            preferred_sides = ("sell", "buy")
-        else:
-            preferred_sides = ("buy", "sell")
-
-        for side in preferred_sides:
-            if side == "buy":
-                price = market.best_ask(symbol)
-
-                if price is None or not math.isfinite(price) or price <= 0:
-                    continue
-
-                if not portfolio.can_buy(symbol, 1, price):
-                    continue
-
-            else:
-                price = market.best_bid(symbol)
-
-                if price is None or not math.isfinite(price) or price <= 0:
-                    continue
-
-                if not portfolio.can_sell(symbol, 1):
-                    continue
-
-            self.pending_events.pop(0)
-
-            logger.info(
-                "SHOCK RESPONSE: %s 1 %s @ %.2f (pct=%s)",
-                side.upper(), symbol, price, pct
-            )
-
-            return Signal(
-                symbol=symbol,
-                side=side,
-                quantity=1,
-                price=price
-            )
-
-        logger.warning(
-            "No legal shock trade available for %s; waiting",
-            symbol
-        )
-        return None
-
+    def momentum_strategy(self, market, portfolio) -> Signal | None:
+        """Optional buy-only MSFT 5/20 cross; bearish crosses simply do nothing."""
+        if self.momentum_orders >= MAX_MOMENTUM_ORDERS:
+            return None
+        symbol = PREFERRED_SYMBOL
+        prices = market.prices(symbol)
+        if len(prices) < 21 or not all(
+            isinstance(p, (int, float)) and math.isfinite(p) and p > 0
+            for p in prices[-21:]
+        ):
+            return None
+        prev_ma5 = sum(prices[-6:-1]) / 5
+        prev_ma20 = sum(prices[-21:-1]) / 20
+        ma5 = sum(prices[-5:]) / 5
+        ma20 = sum(prices[-20:]) / 20
+        # Week 3: NEVER place a sell, even if the crossover is bearish.
+        if not (prev_ma5 <= prev_ma20 and ma5 > ma20):
+            return None
+        signature = ("buy", tuple(prices[-21:]))
+        if signature == self.last_momentum_signal:
+            return None
+        signal = self._safe_buy(market, portfolio, symbol)
+        if signal is None:
+            return None
+        self.last_momentum_signal = signature
+        self.momentum_orders += 1
+        logger.info("MOMENTUM BUY %d %s @ %.2f", QUANTITY, symbol, signal.price)
+        return signal
 
     def on_tick(self, market, portfolio) -> Signal | None:
-        """Send one size-limited buy at the best ask; afterwards return None.
-
-        Args:
-            market:    live MarketData — symbols(), best_ask(s), mid_price(s).
-            portfolio: live Portfolio — cash, positions, can_buy(s, qty, px).
-
-        Returns:
-            A buy Signal on the tick we decide to trade, otherwise None.
-        """
+        # Fired earnings get priority: do not spend the shock's response
+        # window executing the unrelated momentum strategy.
         if self.pending_events:
-            return self.handle_shock(market, portfolio)
+            signal = self.handle_shock(market, portfolio)
+        else:
+            signal = self.momentum_strategy(market, portfolio)
+        # Final fail-closed guard for any future strategy modifications.
+        if signal is not None and signal.side != "buy":
+            logger.error("Blocked non-buy signal in Week 3: %s", signal)
+            return None
+        return signal
 
-        return self.momentum_strategy(market, portfolio)
-    
-        
     def on_fill(self, side: str, symbol: str, quantity: int,
                 price: float) -> None:
-        """Log our own executions; the first fill completes Level 1."""
         logger.info("FILL %s %d %s @ %.2f", side.upper(), quantity, symbol, price)
-        if side == "buy":
-            self.filled = True
 
     def on_event(self, event: str, message: str, data: dict) -> None:
-        """Log market news (shocks, calendar, fee schedule, ...)."""
-        logger.info("EVENT %s — %s %s", event, message, data or "")
-
-        # w3
+        """Only trade on events that have already fired, not CALENDAR previews."""
+        data = data or {}
+        logger.info("EVENT %s — %s %s", event, message, data)
         if event == "CALENDAR_EVENT":
             if data.get("kind") != "earnings":
                 return
-            symbols = [data.get("symbol")]
-
+            symbols = data.get("affected") or [data.get("symbol")]
+            event_key = ("CALENDAR_EVENT", data.get("tick"))
         elif event == "SHOCK":
-            symbols = data.get("affected", []) or []
-
-            if isinstance(symbols, str):
-                symbols = [symbols]
-            if not symbols and data.get("symbol"):
-                symbols = [data["symbol"]]
-
+            symbols = data.get("affected") or [data.get("symbol")]
+            event_key = ("SHOCK", data.get("shock_id"))
         else:
             return
-
+        if isinstance(symbols, str):
+            symbols = [symbols]
         for symbol in symbols:
-            if symbol not in ("NVDA", "TSLA"):
+            if symbol not in EVENT_SYMBOLS:
                 continue
-
-            event_id = (
-                event,
-                symbol,
-                data.get("tick") if event == "CALENDAR_EVENT"
-                else data.get("shock_id")
-            )
-
-            if event_id in self.seen_events:
+            key = (*event_key, symbol)
+            if key in self.seen_events:
                 continue
-
-            self.seen_events.add(event_id)
+            self.seen_events.add(key)
             self.pending_events.append({
-                "symbol": symbol,
-                "event": event,
-                "pct": data.get("pct"),
-                "data": data,
+                "symbol": symbol, "event": event, "pct": data.get("pct")
             })
-
-            logger.info(
-                "SHOCK DETECTED: %s, pct=%s",
-                symbol,
-                data.get("pct")
-            )
-
-    @staticmethod
-    def _pick_symbol(market) -> str | None:
-        """PREFERRED_SYMBOL if it has an ask, else any symbol that does."""
-        candidates = [PREFERRED_SYMBOL] + [
-            s for s in market.symbols() if s != PREFERRED_SYMBOL]
-        for symbol in candidates:
-            ask = market.best_ask(symbol)
-            if ask is not None and ask > 0:
-                return symbol
-        return None
+            logger.info("SHOCK DETECTED: %s (event=%s pct=%s)",
+                        symbol, event, data.get("pct"))
 
 
 def _setup_logging() -> None:
-    """Log to the terminal and to logs/<TEAM_ID>.log.
-    """
     log_dir = pathlib.Path("logs")
     log_dir.mkdir(exist_ok=True)
     team_id = os.environ.get("TEAM_ID", "trader")
@@ -272,9 +156,8 @@ def _setup_logging() -> None:
         level=logging.INFO,
         format="%(asctime)s %(levelname)-7s %(name)s: %(message)s",
         datefmt="%H:%M:%S",
-        handlers=[logging.StreamHandler(),
-                  logging.FileHandler(log_dir / f"{team_id}.log")],
-        force=True, # replaces the handler the engine's imports have already put on the root logger
+        handlers=[logging.StreamHandler(), logging.FileHandler(log_dir / f"{team_id}.log")],
+        force=True,
     )
     logging.getLogger("trader.trader").setLevel(logging.DEBUG)
 
