@@ -47,8 +47,10 @@ MAX_ABS_POSITION = 20
 # Week 4 calendar: earnings AMZN @ t350, GOOGL @ t800.
 EVENT_SYMBOLS = frozenset(("AMZN", "GOOGL"))
 # A fired event we could not act on (no ask, no cash) is dropped after this
-# many on_tick calls (~0.5 s each) instead of being retried forever.
-MAX_EVENT_WAIT_TICKS = 60
+# many on_tick calls (~0.5 s each) instead of being retried forever. Live
+# week 4: brokers were out of the AMZN book for ~30 s after a -7.9% print,
+# so 60 ticks (30 s) expired every seat's event before a quote came back.
+MAX_EVENT_WAIT_TICKS = 600          # ~5 minutes
 # ORCA bookbuild: 200 shares at the top of the range is ~$5.6k on a $250k
 # seat — far below both exchange caps (deal size, and cash at max_price).
 IPO_SHARES = 200
