@@ -12,8 +12,8 @@ from shared.messages import IPOSubscribe, SessionEvent
 
 from team.trader import (
     IPO_SHARES,
-    POST_CROSS_WAIT_SNAPSHOTS,
-    PREOPEN_MAX_SNAPSHOTS,
+    POST_CROSS_WAIT_TICKS,
+    PREOPEN_MAX_TICKS,
     MyTrader,
     _NoFlattenBot,
 )
@@ -93,25 +93,25 @@ def test_exactly_one_buy_after_the_cross():
     bot.on_event("AUCTION_RESULT", "cross done", {"phase": "open", "symbols": {}})
     assert not bot.in_preopen
 
-    signals = _run_ticks(bot, market, portfolio, POST_CROSS_WAIT_SNAPSHOTS + 10)
+    signals = _run_ticks(bot, market, portfolio, POST_CROSS_WAIT_TICKS + 10)
     buys = [s for s in signals if s is not None]
     assert len(buys) == 1
     assert buys[0].symbol == "MSFT" and buys[0].side == "buy" and buys[0].quantity == 1
     # It waited for the book to rebuild: nothing on the first ticks.
-    assert signals[:POST_CROSS_WAIT_SNAPSHOTS] == [None] * POST_CROSS_WAIT_SNAPSHOTS
+    assert signals[:POST_CROSS_WAIT_TICKS] == [None] * POST_CROSS_WAIT_TICKS
 
 
 def test_post_cross_buy_without_seeing_preopen():
     """Connecting after the cross still yields the guaranteed order."""
     bot = MyTrader()
-    signals = _run_ticks(bot, FakeMarket(), FakePortfolio(), POST_CROSS_WAIT_SNAPSHOTS + 5)
+    signals = _run_ticks(bot, FakeMarket(), FakePortfolio(), POST_CROSS_WAIT_TICKS + 5)
     assert sum(s is not None for s in signals) == 1
 
 
 def test_post_cross_buy_waits_for_an_ask():
     bot = MyTrader()
     market, portfolio = FakeMarket(ask=None), FakePortfolio()
-    signals = _run_ticks(bot, market, portfolio, POST_CROSS_WAIT_SNAPSHOTS + 5)
+    signals = _run_ticks(bot, market, portfolio, POST_CROSS_WAIT_TICKS + 5)
     assert all(s is None for s in signals)
     assert not bot.post_cross_done
     market.ask = 400.10
@@ -123,7 +123,7 @@ def test_preopen_backstop_resumes_trading():
     bot = MyTrader()
     bot.on_event("SESSION_PREOPEN", "pre-open", {"ticks": 12})
     signals = _run_ticks(bot, FakeMarket(), FakePortfolio(),
-                         PREOPEN_MAX_SNAPSHOTS + POST_CROSS_WAIT_SNAPSHOTS + 5)
+                         PREOPEN_MAX_TICKS + POST_CROSS_WAIT_TICKS + 5)
     assert not bot.in_preopen
     assert sum(s is not None for s in signals) == 1
 
@@ -235,3 +235,18 @@ def test_ipo_lifecycle_events_are_harmless():
                      ("TRADING_HALT", {"symbol": "AMZN"})]:
         bot.on_event(ev, "msg", data)
     assert bot.pending_events == [] and not bot.in_preopen
+
+
+def test_post_cross_buy_fires_on_a_long_lived_process():
+    """Regression (live, week 4): the SDK price history is a deque(maxlen=200).
+
+    After ~200 snapshots its length stops growing, so a wait measured on
+    len(market.prices()) never completes. The wait must be on our own tick
+    counter: here the history length is pinned at 200 and never changes.
+    """
+    bot = MyTrader()
+    market, portfolio = FakeMarket(n=200), FakePortfolio()
+    bot.on_event("AUCTION_RESULT", "cross done", {"phase": "open", "symbols": {}})
+    signals = [bot.on_tick(market, portfolio) for _ in range(POST_CROSS_WAIT_TICKS + 5)]
+    assert sum(s is not None for s in signals) == 1
+    assert bot.post_cross_done

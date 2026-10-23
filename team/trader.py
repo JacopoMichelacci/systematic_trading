@@ -52,12 +52,16 @@ MAX_EVENT_WAIT_TICKS = 60
 # ORCA bookbuild: 200 shares at the top of the range is ~$5.6k on a $250k
 # seat — far below both exchange caps (deal size, and cash at max_price).
 IPO_SHARES = 200
-# Book snapshots to let the brokers rebuild the book after the cross before
-# sending the guaranteed post-cross order.
-POST_CROSS_WAIT_SNAPSHOTS = 5
-# Backstop: the opening auction is 12 ticks. If we are somehow still flagged
-# "pre-open" this many snapshots later, assume the AUCTION_RESULT was missed.
-PREOPEN_MAX_SNAPSHOTS = 40
+# on_tick calls (~0.5 s each) to let the brokers rebuild the book after the
+# cross before sending the guaranteed post-cross order. Measured on our own
+# tick counter, NOT on len(market.prices()): the SDK's price history is a
+# deque capped at 200, so on a long-lived process its length stops growing
+# and a snapshot-based wait never completes (live bug, week 4).
+POST_CROSS_WAIT_TICKS = 10
+# Backstop: the opening auction is 12 ticks (~12 s). If we are somehow still
+# flagged "pre-open" this many on_tick calls later, assume AUCTION_RESULT
+# was missed.
+PREOPEN_MAX_TICKS = 80
 
 
 class MyTrader(Trader):
@@ -71,9 +75,9 @@ class MyTrader(Trader):
         self.tick_count: int = 0
         # Opening-auction state (driven by on_event, read by on_tick).
         self.in_preopen: bool = False
-        self.preopen_snapshots: int | None = None
+        self.preopen_tick: int | None = None
         self.post_cross_done: bool = False
-        self.cross_snapshots: int | None = None
+        self.cross_tick: int | None = None
 
     # ── helpers ─────────────────────────────────────────────────────────
 
@@ -103,11 +107,6 @@ class MyTrader(Trader):
             return None
         return Signal(symbol=symbol, side="buy", quantity=QUANTITY, price=ask)
 
-    @staticmethod
-    def _snapshots(market) -> int:
-        """How many MSFT book snapshots we have seen (our clock, ~1/s)."""
-        return len(market.prices(PREFERRED_SYMBOL))
-
     # ── strategies ──────────────────────────────────────────────────────
 
     def handle_shock(self, market, portfolio) -> Signal | None:
@@ -135,11 +134,10 @@ class MyTrader(Trader):
         """One guaranteed 1-share buy shortly after the opening cross."""
         if self.post_cross_done:
             return None
-        n = self._snapshots(market)
-        if self.cross_snapshots is None:
-            self.cross_snapshots = n           # first tick after the cross
+        if self.cross_tick is None:
+            self.cross_tick = self.tick_count  # first tick after the cross
             return None
-        if n - self.cross_snapshots < POST_CROSS_WAIT_SNAPSHOTS:
+        if self.tick_count - self.cross_tick < POST_CROSS_WAIT_TICKS:
             return None
         candidates = [PREFERRED_SYMBOL] + [
             s for s in market.symbols() if s != PREFERRED_SYMBOL]
@@ -187,13 +185,12 @@ class MyTrader(Trader):
         # pre-open, but the graded requirement is orders AFTER the cross and
         # the auction is the one place a marketable buy can misbehave.
         if self.in_preopen:
-            n = self._snapshots(market)
-            if self.preopen_snapshots is None:
-                self.preopen_snapshots = n
-            if n - self.preopen_snapshots <= PREOPEN_MAX_SNAPSHOTS:
+            if self.preopen_tick is None:
+                self.preopen_tick = self.tick_count
+            if self.tick_count - self.preopen_tick <= PREOPEN_MAX_TICKS:
                 return None
-            logger.warning("Still pre-open after %d snapshots — assuming the "
-                           "cross happened and resuming", PREOPEN_MAX_SNAPSHOTS)
+            logger.warning("Still pre-open after %d ticks — assuming the "
+                           "cross happened and resuming", PREOPEN_MAX_TICKS)
             self.in_preopen = False
 
         # Fired earnings get priority: do not spend the shock's response
@@ -236,12 +233,12 @@ class MyTrader(Trader):
 
         if event == "SESSION_PREOPEN":
             self.in_preopen = True
-            self.preopen_snapshots = None
+            self.preopen_tick = None
             return
         if event == "AUCTION_RESULT":
             if data.get("phase", "open") == "open":
                 self.in_preopen = False
-                self.cross_snapshots = None     # restart the post-cross clock
+                self.cross_tick = None          # restart the post-cross clock
                 self.post_cross_done = False
             return
 
