@@ -191,3 +191,47 @@ def test_sdk_forwards_auction_events_to_the_trader():
     asyncio.run(bot._on_session_event(SessionEvent(
         event="AUCTION_RESULT", message="done", data={"phase": "open", "symbols": {}})))
     assert not owner.in_preopen
+
+
+# ── pieces merged from the main-branch implementation ───────────────────
+
+def test_position_cap_blocks_further_buys():
+    from team.trader import MAX_ABS_POSITION
+    bot = MyTrader()
+    bot.post_cross_done = True
+    portfolio = FakePortfolio()
+    portfolio.positions["AMZN"] = MAX_ABS_POSITION
+    bot.on_event("CALENDAR_EVENT", "AMZN earnings",
+                 {"kind": "earnings", "symbol": "AMZN", "pct": 0.04, "tick": 350})
+    market = FakeMarket()
+    market.best_ask = lambda s: 150.10          # AMZN has an ask this time
+    assert bot.on_tick(market, portfolio) is None
+    assert len(bot.pending_events) == 1         # still queued, not sent
+
+
+def test_stale_event_expires():
+    from team.trader import MAX_EVENT_WAIT_TICKS
+    bot = MyTrader()
+    bot.post_cross_done = True
+    bot.on_event("CALENDAR_EVENT", "AMZN earnings",
+                 {"kind": "earnings", "symbol": "AMZN", "pct": 0.04, "tick": 350})
+    market, portfolio = FakeMarket(), FakePortfolio()   # AMZN has no ask
+    for _ in range(MAX_EVENT_WAIT_TICKS + 1):
+        assert bot.on_tick(market, portfolio) is None
+    assert bot.pending_events == []             # dropped, momentum resumes
+    assert bot.on_tick(market, portfolio) is None
+
+
+def test_on_ipo_rejects_inverted_range():
+    assert MyTrader().on_ipo("ORCA", 28.0, 24.0, 4000, {}) is None
+
+
+def test_ipo_lifecycle_events_are_harmless():
+    bot = MyTrader()
+    for ev, data in [("IPO_SUB_RESULT", {"ok": True, "symbol": "ORCA"}),
+                     ("IPO_SUB_RESULT", {"ok": False, "error": "x"}),
+                     ("IPO_PRICED", {"symbol": "ORCA", "offer_price": 27.0}),
+                     ("IPO_LISTED", {"symbol": "ORCA"}),
+                     ("TRADING_HALT", {"symbol": "AMZN"})]:
+        bot.on_event(ev, "msg", data)
+    assert bot.pending_events == [] and not bot.in_preopen

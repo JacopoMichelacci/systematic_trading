@@ -6,16 +6,20 @@ What the week-4 block grades (Phase 1, Part A):
      not only during the pre-open           -> in_preopen gate + post-cross buy
   3. at most 10 rejected orders             -> _NoFlattenBot (no close-time
                                                market orders), tiny marketable
-                                               buys only
+                                               buys only, position cap
 
 On top of that it keeps the week-3 behaviour: a 1-share marketable BUY when
 a scheduled earnings print fires on EVENT_SYMBOLS, and a buy-only MSFT 5/20
-moving-average cross. It never submits a sell.
+moving-average cross. Shorts are unlocked in week 4 but this bot never
+submits a sell: every extra order type is another way to collect a rejection,
+and the rejection count is what is graded. Positions carry over between
+sessions (the season never resets), so there is nothing to flatten.
 
 Run: TEAM_ID=butter_chicken_pasta_trader_1 python -m team.trader
 
 NOTE: ``CALENDAR`` announces *future* events. ``CALENDAR_EVENT`` is emitted
 when scheduled earnings actually fire; ``SHOCK`` is for injected shocks.
+``IPO_OPEN`` starts the bookbuild (t150, after the opening cross).
 """
 
 from __future__ import annotations
@@ -37,8 +41,14 @@ MAX_MOMENTUM_ORDERS = 3
 # Account for venue taker fees and stale best-ask prices, rather than relying
 # on Portfolio.can_buy's smaller 0.1% buffer alone.
 BUY_CASH_BUFFER = 1.01
+# Internal per-symbol cap, far below the venue's position limit: a runaway
+# loop can never build a position worth a POSITION_LIMIT rejection.
+MAX_ABS_POSITION = 20
 # Week 4 calendar: earnings AMZN @ t350, GOOGL @ t800.
 EVENT_SYMBOLS = frozenset(("AMZN", "GOOGL"))
+# A fired event we could not act on (no ask, no cash) is dropped after this
+# many on_tick calls (~0.5 s each) instead of being retried forever.
+MAX_EVENT_WAIT_TICKS = 60
 # ORCA bookbuild: 200 shares at the top of the range is ~$5.6k on a $250k
 # seat — far below both exchange caps (deal size, and cash at max_price).
 IPO_SHARES = 200
@@ -58,6 +68,7 @@ class MyTrader(Trader):
         self.seen_events: set[tuple] = set()
         self.last_momentum_signal: tuple | None = None
         self.momentum_orders: int = 0
+        self.tick_count: int = 0
         # Opening-auction state (driven by on_event, read by on_tick).
         self.in_preopen: bool = False
         self.preopen_snapshots: int | None = None
@@ -67,14 +78,22 @@ class MyTrader(Trader):
     # ── helpers ─────────────────────────────────────────────────────────
 
     @staticmethod
-    def _safe_buy(market, portfolio, symbol: str) -> Signal | None:
-        """Return a 1-share marketable limit BUY only when it is affordable.
+    def _valid_price(price) -> bool:
+        """Reject missing, boolean, non-finite or non-positive prices."""
+        return (isinstance(price, (int, float)) and not isinstance(price, bool)
+                and math.isfinite(price) and price > 0)
 
-        No sell signal can be constructed here, even for a negative shock.
+    @classmethod
+    def _safe_buy(cls, market, portfolio, symbol: str) -> Signal | None:
+        """Return a 1-share marketable limit BUY only when it is safe to send.
+
+        Checks: a real ask, the internal position cap, cash with a fee
+        buffer, and the SDK's own can_buy. No sell can be constructed here.
         """
         ask = market.best_ask(symbol)
-        if (not isinstance(ask, (int, float)) or isinstance(ask, bool)
-                or not math.isfinite(ask) or ask <= 0):
+        if not cls._valid_price(ask):
+            return None
+        if portfolio.positions.get(symbol, 0) + QUANTITY > MAX_ABS_POSITION:
             return None
         if (not isinstance(portfolio.cash, (int, float))
                 or not math.isfinite(portfolio.cash)
@@ -92,14 +111,19 @@ class MyTrader(Trader):
     # ── strategies ──────────────────────────────────────────────────────
 
     def handle_shock(self, market, portfolio) -> Signal | None:
-        """Act on the earliest *fired* event. Retain it until an order is sent."""
+        """Act on the earliest *fired* event; drop it once it is stale."""
         if not self.pending_events:
             return None
         shock = self.pending_events[0]
+        if self.tick_count - shock["created_tick"] > MAX_EVENT_WAIT_TICKS:
+            self.pending_events.pop(0)
+            logger.info("SHOCK EXPIRED: %s (no fillable ask for %d ticks)",
+                        shock["symbol"], MAX_EVENT_WAIT_TICKS)
+            return None
         signal = self._safe_buy(market, portfolio, shock["symbol"])
         if signal is None:
-            # No bid/ask or insufficient cash: don't attempt a doomed order.
-            logger.debug("Shock %s pending: no affordable ask yet", shock["symbol"])
+            # No ask, capped, or insufficient cash: don't send a doomed order.
+            logger.debug("Shock %s pending: no safe buy yet", shock["symbol"])
             return None
         self.pending_events.pop(0)
         logger.info("SHOCK RESPONSE: BUY %d %s @ %.2f (event=%s, pct=%s)",
@@ -134,10 +158,7 @@ class MyTrader(Trader):
             return None
         symbol = PREFERRED_SYMBOL
         prices = market.prices(symbol)
-        if len(prices) < 21 or not all(
-            isinstance(p, (int, float)) and math.isfinite(p) and p > 0
-            for p in prices[-21:]
-        ):
+        if len(prices) < 21 or not all(self._valid_price(p) for p in prices[-21:]):
             return None
         prev_ma5 = sum(prices[-6:-1]) / 5
         prev_ma20 = sum(prices[-21:-1]) / 20
@@ -160,6 +181,8 @@ class MyTrader(Trader):
     # ── hooks ───────────────────────────────────────────────────────────
 
     def on_tick(self, market, portfolio) -> Signal | None:
+        self.tick_count += 1
+
         # Opening auction: send nothing at all. Limit orders are legal in the
         # pre-open, but the graded requirement is orders AFTER the cross and
         # the auction is the one place a marketable buy can misbehave.
@@ -181,9 +204,11 @@ class MyTrader(Trader):
             signal = self.post_cross_buy(market, portfolio)
         else:
             signal = self.momentum_strategy(market, portfolio)
+
         # Final fail-closed guard for any future strategy modifications.
-        if signal is not None and signal.side != "buy":
-            logger.error("Blocked non-buy signal: %s", signal)
+        if signal is not None and (signal.side != "buy" or signal.quantity <= 0
+                                   or not self._valid_price(signal.price)):
+            logger.error("Blocked unsafe signal: %s", signal)
             return None
         return signal
 
@@ -194,7 +219,10 @@ class MyTrader(Trader):
     def on_ipo(self, symbol: str, lo: float, hi: float, shares: int,
                data: dict) -> tuple[int, float] | None:
         """Bid the TOP of the range for a sure allocation; small size."""
-        if hi <= 0 or shares <= 0:
+        if (not self._valid_price(lo) or not self._valid_price(hi)
+                or hi < lo or shares <= 0):
+            logger.warning("IPO %s: invalid terms lo=%s hi=%s shares=%s — passing",
+                           symbol, lo, hi, shares)
             return None
         qty = min(IPO_SHARES, int(shares))
         logger.info("IPO %s: bidding %d @ %.2f (range %.2f–%.2f)",
@@ -202,7 +230,7 @@ class MyTrader(Trader):
         return (qty, hi)
 
     def on_event(self, event: str, message: str, data: dict) -> None:
-        """Track the opening auction; queue fired earnings on EVENT_SYMBOLS."""
+        """Track the opening auction and the IPO; queue fired earnings."""
         data = data or {}
         logger.info("EVENT %s — %s %s", event, message, data)
 
@@ -215,6 +243,20 @@ class MyTrader(Trader):
                 self.in_preopen = False
                 self.cross_snapshots = None     # restart the post-cross clock
                 self.post_cross_done = False
+            return
+
+        # IPO lifecycle — log loudly so the live session is easy to follow.
+        if event == "IPO_SUB_RESULT":
+            if data.get("ok"):
+                logger.info("IPO SUBSCRIPTION ACCEPTED: %s", data.get("symbol"))
+            else:
+                logger.warning("IPO SUBSCRIPTION REJECTED: %s", data)
+            return
+        if event in ("IPO_PRICED", "IPO_LISTED"):
+            logger.info("%s: %s", event, data)
+            return
+        if event in ("TRADING_HALT", "MARKET_HALT"):
+            logger.warning("%s: %s", event, data)
             return
 
         if event == "CALENDAR_EVENT":
@@ -237,7 +279,8 @@ class MyTrader(Trader):
                 continue
             self.seen_events.add(key)
             self.pending_events.append({
-                "symbol": symbol, "event": event, "pct": data.get("pct")
+                "symbol": symbol, "event": event, "pct": data.get("pct"),
+                "created_tick": self.tick_count,
             })
             logger.info("SHOCK DETECTED: %s (event=%s pct=%s)",
                         symbol, event, data.get("pct"))
