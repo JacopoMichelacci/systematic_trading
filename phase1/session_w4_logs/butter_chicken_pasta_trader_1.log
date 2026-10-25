@@ -1,0 +1,196 @@
+15:18:35 INFO    trader.trader: Connecting to wss://feed.algoarena-st.duckdns.org (EXCHANGE_URL from the shell)
+15:18:35 INFO    trader.trader: Connected to wss://feed.algoarena-st.duckdns.org as butter_chicken_pasta_trader_1 (trader)
+15:18:36 INFO    trader.trader: Session event: FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps
+15:18:36 INFO    team.trader: EVENT FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps {'port': 8765, 'taker': 0.003, 'rebate': 0.0005, 'net': 0.0025, 'old': {'taker': 0.003, 'rebate': 0.0005}, 'new': {'taker': 0.003, 'rebate': 0.0005}}
+15:18:36 INFO    trader.trader: Session event: SESSION_OPEN — Session already open — you joined mid-session.
+15:18:39 INFO    team.trader: POST-CROSS BUY 1 MSFT @ 418.81
+15:18:39 DEBUG   trader.trader: Placed: buy 1 MSFT @ 418.8100
+15:18:39 DEBUG   trader.trader: Ack: buy 1 MSFT @ 418.8100
+15:18:39 INFO    trader.trader: Fill: bought 1 MSFT @ 418.8100 (fee=0.6282)
+15:18:39 INFO    team.trader: FILL BUY 1 MSFT @ 418.81
+15:18:39 DEBUG   trader.trader: Portfolio: net_worth=293234.69
+15:18:49 INFO    team.trader: MOMENTUM BUY 1 MSFT @ 418.80
+15:18:49 DEBUG   trader.trader: Placed: buy 1 MSFT @ 418.8000
+15:18:49 DEBUG   trader.trader: Ack: buy 1 MSFT @ 418.8000
+15:18:49 INFO    trader.trader: Fill: bought 1 MSFT @ 418.8000 (fee=0.6282)
+15:18:49 INFO    team.trader: FILL BUY 1 MSFT @ 418.80
+15:18:49 DEBUG   trader.trader: Portfolio: net_worth=293244.49
+15:19:39 INFO    team.trader: MOMENTUM BUY 1 MSFT @ 419.12
+15:19:39 DEBUG   trader.trader: Placed: buy 1 MSFT @ 419.1200
+15:19:39 DEBUG   trader.trader: Ack: buy 1 MSFT @ 419.1200
+15:19:39 INFO    trader.trader: Fill: bought 1 MSFT @ 419.1200 (fee=0.6287)
+15:19:39 INFO    team.trader: FILL BUY 1 MSFT @ 419.12
+15:19:39 DEBUG   trader.trader: Portfolio: net_worth=293260.32
+15:25:12 INFO    trader.trader: Connecting to wss://feed.algoarena-st.duckdns.org (EXCHANGE_URL from the shell)
+15:25:12 INFO    trader.trader: Connected to wss://feed.algoarena-st.duckdns.org as butter_chicken_pasta_trader_1 (trader)
+15:25:12 INFO    trader.trader: Session event: FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps
+15:25:12 INFO    team.trader: EVENT FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps {'port': 8765, 'taker': 0.003, 'rebate': 0.0005, 'net': 0.0025, 'old': {'taker': 0.003, 'rebate': 0.0005}, 'new': {'taker': 0.003, 'rebate': 0.0005}}
+15:25:12 INFO    trader.trader: Session event: SESSION_OPEN — Session already open — you joined mid-session.
+15:25:16 INFO    team.trader: POST-CROSS BUY 1 MSFT @ 419.45
+15:25:16 DEBUG   trader.trader: Placed: buy 1 MSFT @ 419.4500
+15:25:16 DEBUG   trader.trader: Ack: buy 1 MSFT @ 419.4500
+15:25:16 INFO    trader.trader: Fill: bought 1 MSFT @ 419.4500 (fee=0.6292)
+15:25:16 INFO    team.trader: FILL BUY 1 MSFT @ 419.45
+15:25:16 DEBUG   trader.trader: Portfolio: net_worth=293112.11
+15:27:01 INFO    team.trader: MOMENTUM BUY 1 MSFT @ 420.27
+15:27:01 DEBUG   trader.trader: Placed: buy 1 MSFT @ 420.2700
+15:27:01 DEBUG   trader.trader: Ack: buy 1 MSFT @ 420.2700
+15:27:01 INFO    trader.trader: Fill: bought 1 MSFT @ 420.2700 (fee=0.6304)
+15:27:01 INFO    team.trader: FILL BUY 1 MSFT @ 420.27
+15:27:01 DEBUG   trader.trader: Portfolio: net_worth=293124.85
+15:27:44 INFO    team.trader: MOMENTUM BUY 1 MSFT @ 420.41
+15:27:44 DEBUG   trader.trader: Placed: buy 1 MSFT @ 420.4100
+15:27:44 DEBUG   trader.trader: Ack: buy 1 MSFT @ 420.4100
+15:27:44 INFO    trader.trader: Fill: bought 1 MSFT @ 420.4100 (fee=0.6306)
+15:27:44 INFO    team.trader: FILL BUY 1 MSFT @ 420.41
+15:27:44 DEBUG   trader.trader: Portfolio: net_worth=293126.60
+15:28:43 INFO    team.trader: MOMENTUM BUY 1 MSFT @ 420.43
+15:28:43 DEBUG   trader.trader: Placed: buy 1 MSFT @ 420.4300
+15:28:43 DEBUG   trader.trader: Ack: buy 1 MSFT @ 420.4300
+15:28:43 INFO    trader.trader: Fill: bought 1 MSFT @ 420.4300 (fee=0.6306)
+15:28:43 INFO    team.trader: FILL BUY 1 MSFT @ 420.43
+15:28:43 DEBUG   trader.trader: Portfolio: net_worth=293143.94
+15:30:00 INFO    trader.trader: Session event: SESSION_CLOSED — Trading session is now CLOSED. Flatten positions.
+15:30:00 INFO    team.trader: Session closed — keeping positions (no close-time orders)
+15:30:19 INFO    trader.trader: Session event: WEEK_CHANGED — Week 4: Market making — shorts unlock, post-only, opening auction, the ORCA IPO, purchase window 1
+15:30:19 INFO    team.trader: EVENT WEEK_CHANGED — Week 4: Market making — shorts unlock, post-only, opening auction, the ORCA IPO, purchase window 1 {'week': 4, 'label': 'Market making — shorts unlock, post-only, opening auction, the ORCA IPO, purchase window 1', 'flags': {'shorts_allowed': True, 'post_only_allowed': True, 'circuit_breakers': False, 'cancellation_fees': False, 'latency_enabled': False, 'multi_venue': True, 'futures_enabled': False, 'purchase_window': True}, 'position_limit': 800, 'order_quota': None, 'maintenance_fraction': None, 'scoring_counts': True, 'config': {'OPENING_AUCTION_TICKS': 12, 'CLOSING_AUCTION': False, 'SSR_TRIGGER_PCT': 0.06, 'SHORT_LOCATE_CAP': 2000, 'LULD_BAND_PCT': 0.1}, 'events': [{'kind': 'earnings', 'tick': 350, 'symbol': 'AMZN', 'magnitude_range': [0.03, 0.08]}, {'kind': 'earnings', 'tick': 800, 'symbol': 'GOOGL', 'magnitude_range': [0.03, 0.08]}, {'kind': 'econ_print', 'tick': 1150, 'magnitude_range': [0.01, 0.025], 'market_wide': True}, {'kind': 'dividend', 'tick': 600, 'symbol': 'AAPL', 'amount_per_share': 0.25}, {'kind': 'ipo', 'symbol': 'ORCA', 'name': 'Orca Analytics', 'offer_range': [24.0, 28.0], 'shares': 4000, 'window': [150, 450], 'tick': 550}]}
+15:30:19 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+15:30:19 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 1541320, 'week': 4, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+15:31:53 INFO    trader.trader: Session event: WEEK_CHANGED — Week 4: Market making — shorts unlock, post-only, opening auction, the ORCA IPO, purchase window 1
+15:31:53 INFO    team.trader: EVENT WEEK_CHANGED — Week 4: Market making — shorts unlock, post-only, opening auction, the ORCA IPO, purchase window 1 {'week': 4, 'label': 'Market making — shorts unlock, post-only, opening auction, the ORCA IPO, purchase window 1', 'flags': {'shorts_allowed': True, 'post_only_allowed': True, 'circuit_breakers': False, 'cancellation_fees': False, 'latency_enabled': False, 'multi_venue': True, 'futures_enabled': False, 'purchase_window': True}, 'position_limit': 800, 'order_quota': None, 'maintenance_fraction': None, 'scoring_counts': True, 'config': {'OPENING_AUCTION_TICKS': 12, 'CLOSING_AUCTION': False, 'SSR_TRIGGER_PCT': 0.06, 'SHORT_LOCATE_CAP': 2000, 'LULD_BAND_PCT': 0.1}, 'events': [{'kind': 'earnings', 'tick': 350, 'symbol': 'AMZN', 'magnitude_range': [0.03, 0.08]}, {'kind': 'earnings', 'tick': 800, 'symbol': 'GOOGL', 'magnitude_range': [0.03, 0.08]}, {'kind': 'econ_print', 'tick': 1150, 'magnitude_range': [0.01, 0.025], 'market_wide': True}, {'kind': 'dividend', 'tick': 600, 'symbol': 'AAPL', 'amount_per_share': 0.25}, {'kind': 'ipo', 'symbol': 'ORCA', 'name': 'Orca Analytics', 'offer_range': [24.0, 28.0], 'shares': 4000, 'window': [150, 450], 'tick': 550}]}
+15:31:53 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+15:31:53 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 1541397, 'week': 4, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+15:33:26 INFO    trader.trader: Session event: WEEK_CHANGED — Week 4: Market making — shorts unlock, post-only, opening auction, the ORCA IPO, purchase window 1
+15:33:26 INFO    team.trader: EVENT WEEK_CHANGED — Week 4: Market making — shorts unlock, post-only, opening auction, the ORCA IPO, purchase window 1 {'week': 4, 'label': 'Market making — shorts unlock, post-only, opening auction, the ORCA IPO, purchase window 1', 'flags': {'shorts_allowed': True, 'post_only_allowed': True, 'circuit_breakers': False, 'cancellation_fees': False, 'latency_enabled': False, 'multi_venue': True, 'futures_enabled': False, 'purchase_window': True}, 'position_limit': 800, 'order_quota': None, 'maintenance_fraction': None, 'scoring_counts': True, 'config': {'OPENING_AUCTION_TICKS': 12, 'CLOSING_AUCTION': False, 'SSR_TRIGGER_PCT': 0.06, 'SHORT_LOCATE_CAP': 2000, 'LULD_BAND_PCT': 0.1}, 'events': [{'kind': 'earnings', 'tick': 350, 'symbol': 'AMZN', 'magnitude_range': [0.03, 0.08]}, {'kind': 'earnings', 'tick': 800, 'symbol': 'GOOGL', 'magnitude_range': [0.03, 0.08]}, {'kind': 'econ_print', 'tick': 1150, 'magnitude_range': [0.01, 0.025], 'market_wide': True}, {'kind': 'dividend', 'tick': 600, 'symbol': 'AAPL', 'amount_per_share': 0.25}, {'kind': 'ipo', 'symbol': 'ORCA', 'name': 'Orca Analytics', 'offer_range': [24.0, 28.0], 'shares': 4000, 'window': [150, 450], 'tick': 550}]}
+15:33:26 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+15:33:26 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 1541475, 'week': 4, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+15:34:43 INFO    trader.trader: Session event: SEAT_PURCHASED — SMO hired smo_trader_smo_trader_4 with $50,000 of capital, debited pro-rata from its existing bots
+15:34:43 INFO    team.trader: EVENT SEAT_PURCHASED — SMO hired smo_trader_smo_trader_4 with $50,000 of capital, debited pro-rata from its existing bots {'team': 'SMO', 'kind': 'trader', 'bot_id': 'smo_trader_smo_trader_4'}
+15:34:59 INFO    trader.trader: Session event: WEEK_CHANGED — Week 4: Market making — shorts unlock, post-only, opening auction, the ORCA IPO, purchase window 1
+15:34:59 INFO    team.trader: EVENT WEEK_CHANGED — Week 4: Market making — shorts unlock, post-only, opening auction, the ORCA IPO, purchase window 1 {'week': 4, 'label': 'Market making — shorts unlock, post-only, opening auction, the ORCA IPO, purchase window 1', 'flags': {'shorts_allowed': True, 'post_only_allowed': True, 'circuit_breakers': False, 'cancellation_fees': False, 'latency_enabled': False, 'multi_venue': True, 'futures_enabled': False, 'purchase_window': True}, 'position_limit': 800, 'order_quota': None, 'maintenance_fraction': None, 'scoring_counts': True, 'config': {'OPENING_AUCTION_TICKS': 12, 'CLOSING_AUCTION': False, 'SSR_TRIGGER_PCT': 0.06, 'SHORT_LOCATE_CAP': 2000, 'LULD_BAND_PCT': 0.1}, 'events': [{'kind': 'earnings', 'tick': 350, 'symbol': 'AMZN', 'magnitude_range': [0.03, 0.08]}, {'kind': 'earnings', 'tick': 800, 'symbol': 'GOOGL', 'magnitude_range': [0.03, 0.08]}, {'kind': 'econ_print', 'tick': 1150, 'magnitude_range': [0.01, 0.025], 'market_wide': True}, {'kind': 'dividend', 'tick': 600, 'symbol': 'AAPL', 'amount_per_share': 0.25}, {'kind': 'ipo', 'symbol': 'ORCA', 'name': 'Orca Analytics', 'offer_range': [24.0, 28.0], 'shares': 4000, 'window': [150, 450], 'tick': 550}]}
+15:34:59 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+15:34:59 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 1541558, 'week': 4, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+15:36:11 INFO    trader.trader: Session event: UPGRADE_PURCHASED — Group 8 bought Securities lending desk for $35,000 — +2,000 shares/symbol of private short locate
+15:36:11 INFO    team.trader: EVENT UPGRADE_PURCHASED — Group 8 bought Securities lending desk for $35,000 — +2,000 shares/symbol of private short locate {'team': 'Group 8', 'upgrade': 'locate_desk', 'cost': 35000.0, 'split': {'group_8_broker': 17349.46, 'group_8_trader_1': 17650.54}, 'effect': '+2,000 shares/symbol of private short locate'}
+15:36:32 INFO    trader.trader: Session event: WEEK_CHANGED — Week 4: Market making — shorts unlock, post-only, opening auction, the ORCA IPO, purchase window 1
+15:36:32 INFO    team.trader: EVENT WEEK_CHANGED — Week 4: Market making — shorts unlock, post-only, opening auction, the ORCA IPO, purchase window 1 {'week': 4, 'label': 'Market making — shorts unlock, post-only, opening auction, the ORCA IPO, purchase window 1', 'flags': {'shorts_allowed': True, 'post_only_allowed': True, 'circuit_breakers': False, 'cancellation_fees': False, 'latency_enabled': False, 'multi_venue': True, 'futures_enabled': False, 'purchase_window': True}, 'position_limit': 800, 'order_quota': None, 'maintenance_fraction': None, 'scoring_counts': True, 'config': {'OPENING_AUCTION_TICKS': 12, 'CLOSING_AUCTION': False, 'SSR_TRIGGER_PCT': 0.06, 'SHORT_LOCATE_CAP': 2000, 'LULD_BAND_PCT': 0.1}, 'events': [{'kind': 'earnings', 'tick': 350, 'symbol': 'AMZN', 'magnitude_range': [0.03, 0.08]}, {'kind': 'earnings', 'tick': 800, 'symbol': 'GOOGL', 'magnitude_range': [0.03, 0.08]}, {'kind': 'econ_print', 'tick': 1150, 'magnitude_range': [0.01, 0.025], 'market_wide': True}, {'kind': 'dividend', 'tick': 600, 'symbol': 'AAPL', 'amount_per_share': 0.25}, {'kind': 'ipo', 'symbol': 'ORCA', 'name': 'Orca Analytics', 'offer_range': [24.0, 28.0], 'shares': 4000, 'window': [150, 450], 'tick': 550}]}
+15:36:32 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+15:36:32 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 1541640, 'week': 4, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+15:38:05 INFO    trader.trader: Session event: WEEK_CHANGED — Week 4: Market making — shorts unlock, post-only, opening auction, the ORCA IPO, purchase window 1
+15:38:05 INFO    team.trader: EVENT WEEK_CHANGED — Week 4: Market making — shorts unlock, post-only, opening auction, the ORCA IPO, purchase window 1 {'week': 4, 'label': 'Market making — shorts unlock, post-only, opening auction, the ORCA IPO, purchase window 1', 'flags': {'shorts_allowed': True, 'post_only_allowed': True, 'circuit_breakers': False, 'cancellation_fees': False, 'latency_enabled': False, 'multi_venue': True, 'futures_enabled': False, 'purchase_window': True}, 'position_limit': 800, 'order_quota': None, 'maintenance_fraction': None, 'scoring_counts': True, 'config': {'OPENING_AUCTION_TICKS': 12, 'CLOSING_AUCTION': False, 'SSR_TRIGGER_PCT': 0.06, 'SHORT_LOCATE_CAP': 2000, 'LULD_BAND_PCT': 0.1}, 'events': [{'kind': 'earnings', 'tick': 350, 'symbol': 'AMZN', 'magnitude_range': [0.03, 0.08]}, {'kind': 'earnings', 'tick': 800, 'symbol': 'GOOGL', 'magnitude_range': [0.03, 0.08]}, {'kind': 'econ_print', 'tick': 1150, 'magnitude_range': [0.01, 0.025], 'market_wide': True}, {'kind': 'dividend', 'tick': 600, 'symbol': 'AAPL', 'amount_per_share': 0.25}, {'kind': 'ipo', 'symbol': 'ORCA', 'name': 'Orca Analytics', 'offer_range': [24.0, 28.0], 'shares': 4000, 'window': [150, 450], 'tick': 550}]}
+15:38:05 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+15:38:05 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 1541720, 'week': 4, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+15:39:38 INFO    trader.trader: Session event: WEEK_CHANGED — Week 4: Market making — shorts unlock, post-only, opening auction, the ORCA IPO, purchase window 1
+15:39:38 INFO    team.trader: EVENT WEEK_CHANGED — Week 4: Market making — shorts unlock, post-only, opening auction, the ORCA IPO, purchase window 1 {'week': 4, 'label': 'Market making — shorts unlock, post-only, opening auction, the ORCA IPO, purchase window 1', 'flags': {'shorts_allowed': True, 'post_only_allowed': True, 'circuit_breakers': False, 'cancellation_fees': False, 'latency_enabled': False, 'multi_venue': True, 'futures_enabled': False, 'purchase_window': True}, 'position_limit': 800, 'order_quota': None, 'maintenance_fraction': None, 'scoring_counts': True, 'config': {'OPENING_AUCTION_TICKS': 12, 'CLOSING_AUCTION': False, 'SSR_TRIGGER_PCT': 0.06, 'SHORT_LOCATE_CAP': 2000, 'LULD_BAND_PCT': 0.1}, 'events': [{'kind': 'earnings', 'tick': 350, 'symbol': 'AMZN', 'magnitude_range': [0.03, 0.08]}, {'kind': 'earnings', 'tick': 800, 'symbol': 'GOOGL', 'magnitude_range': [0.03, 0.08]}, {'kind': 'econ_print', 'tick': 1150, 'magnitude_range': [0.01, 0.025], 'market_wide': True}, {'kind': 'dividend', 'tick': 600, 'symbol': 'AAPL', 'amount_per_share': 0.25}, {'kind': 'ipo', 'symbol': 'ORCA', 'name': 'Orca Analytics', 'offer_range': [24.0, 28.0], 'shares': 4000, 'window': [150, 450], 'tick': 550}]}
+15:39:38 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+15:39:38 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 1541801, 'week': 4, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+15:40:00 DEBUG   trader.trader: Portfolio: net_worth=306811.52
+15:40:00 INFO    trader.trader: Session event: SESSION_PREOPEN — Pre-open: limit orders only — the opening auction crosses in 12 ticks
+15:40:00 INFO    team.trader: EVENT SESSION_PREOPEN — Pre-open: limit orders only — the opening auction crosses in 12 ticks {'symbols': ['AAPL', 'MSFT', 'NVDA', 'TSLA', 'AMZN', 'GOOGL', 'META', 'NFLX', 'AMD', 'INTC', 'ARENA10'], 'ticks': 12}
+15:40:04 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 11 ticks
+15:40:04 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 11 ticks {'ticks_left': 11, 'symbols': {'AAPL': {'price': 223.05, 'volume': 10, 'imbalance': 0}, 'MSFT': {'price': 418.42, 'volume': 10, 'imbalance': 0}, 'TSLA': {'price': 244.58, 'volume': 3, 'imbalance': -7}, 'AMD': {'price': 195.55, 'volume': 5, 'imbalance': -43}}}
+15:40:08 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 10 ticks
+15:40:08 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 10 ticks {'ticks_left': 10, 'symbols': {'AAPL': {'price': 223.0, 'volume': 12, 'imbalance': 28}, 'MSFT': {'price': 418.42, 'volume': 10, 'imbalance': 0}, 'TSLA': {'price': 244.47, 'volume': 7, 'imbalance': 6}, 'AMD': {'price': 180.94, 'volume': 53, 'imbalance': -7}, 'INTC': {'price': 24.26, 'volume': 3, 'imbalance': 19}}}
+15:40:09 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 9 ticks
+15:40:09 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 9 ticks {'ticks_left': 9, 'symbols': {'AAPL': {'price': 223.0, 'volume': 12, 'imbalance': 28}, 'MSFT': {'price': 418.42, 'volume': 10, 'imbalance': 0}, 'NVDA': {'price': 109.7, 'volume': 20, 'imbalance': 20}, 'TSLA': {'price': 244.19, 'volume': 17, 'imbalance': 6}, 'AMZN': {'price': 177.0, 'volume': 5, 'imbalance': 5}, 'GOOGL': {'price': 167.56, 'volume': 10, 'imbalance': 0}, 'META': {'price': 663.08, 'volume': 2, 'imbalance': 8}, 'NFLX': {'price': 567.88, 'volume': 5, 'imbalance': 5}, 'AMD': {'price': 180.94, 'volume': 53, 'imbalance': -7}, 'INTC': {'price': 24.26, 'volume': 3, 'imbalance': 19}}}
+15:40:11 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 8 ticks
+15:40:11 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 8 ticks {'ticks_left': 8, 'symbols': {'AAPL': {'price': 223.0, 'volume': 12, 'imbalance': 28}, 'MSFT': {'price': 418.42, 'volume': 10, 'imbalance': 0}, 'NVDA': {'price': 109.7, 'volume': 20, 'imbalance': 20}, 'TSLA': {'price': 244.19, 'volume': 17, 'imbalance': 6}, 'GOOGL': {'price': 167.56, 'volume': 10, 'imbalance': 10}, 'META': {'price': 663.08, 'volume': 2, 'imbalance': 8}, 'NFLX': {'price': 567.88, 'volume': 10, 'imbalance': -5}, 'AMD': {'price': 180.94, 'volume': 53, 'imbalance': -7}, 'INTC': {'price': 24.26, 'volume': 3, 'imbalance': 19}}}
+15:40:12 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 7 ticks
+15:40:12 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 7 ticks {'ticks_left': 7, 'symbols': {'AAPL': {'price': 223.0, 'volume': 27, 'imbalance': 13}, 'MSFT': {'price': 418.42, 'volume': 10, 'imbalance': 0}, 'NVDA': {'price': 109.7, 'volume': 20, 'imbalance': 20}, 'TSLA': {'price': 244.19, 'volume': 17, 'imbalance': 6}, 'GOOGL': {'price': 167.69, 'volume': 70, 'imbalance': -1}, 'META': {'price': 663.08, 'volume': 2, 'imbalance': 8}, 'NFLX': {'price': 567.88, 'volume': 10, 'imbalance': -5}, 'AMD': {'price': 180.94, 'volume': 53, 'imbalance': -7}, 'INTC': {'price': 24.26, 'volume': 3, 'imbalance': 9}}}
+15:40:13 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 6 ticks
+15:40:13 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 6 ticks {'ticks_left': 6, 'symbols': {'AAPL': {'price': 223.0, 'volume': 27, 'imbalance': 13}, 'MSFT': {'price': 418.42, 'volume': 10, 'imbalance': 0}, 'NVDA': {'price': 109.7, 'volume': 20, 'imbalance': 20}, 'TSLA': {'price': 244.19, 'volume': 22, 'imbalance': 1}, 'GOOGL': {'price': 167.69, 'volume': 70, 'imbalance': -1}, 'META': {'price': 663.08, 'volume': 3, 'imbalance': 7}, 'NFLX': {'price': 567.88, 'volume': 10, 'imbalance': -5}, 'AMD': {'price': 180.94, 'volume': 53, 'imbalance': -7}, 'INTC': {'price': 24.25, 'volume': 18, 'imbalance': 4}}}
+15:40:14 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 5 ticks
+15:40:14 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 5 ticks {'ticks_left': 5, 'symbols': {'AAPL': {'price': 223.0, 'volume': 40, 'imbalance': -7}, 'MSFT': {'price': 418.42, 'volume': 10, 'imbalance': 0}, 'NVDA': {'price': 109.7, 'volume': 20, 'imbalance': 20}, 'TSLA': {'price': 244.19, 'volume': 22, 'imbalance': 1}, 'GOOGL': {'price': 167.69, 'volume': 70, 'imbalance': -1}, 'META': {'price': 663.08, 'volume': 3, 'imbalance': 7}, 'NFLX': {'price': 567.88, 'volume': 10, 'imbalance': -5}, 'AMD': {'price': 180.94, 'volume': 53, 'imbalance': -7}, 'INTC': {'price': 24.23, 'volume': 18, 'imbalance': 14}}}
+15:40:16 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 4 ticks
+15:40:16 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 4 ticks {'ticks_left': 4, 'symbols': {'AAPL': {'price': 223.0, 'volume': 40, 'imbalance': -7}, 'MSFT': {'price': 418.42, 'volume': 10, 'imbalance': 0}, 'NVDA': {'price': 109.7, 'volume': 20, 'imbalance': 20}, 'TSLA': {'price': 244.05, 'volume': 32, 'imbalance': 11}, 'AMZN': {'price': 176.99, 'volume': 2, 'imbalance': 18}, 'GOOGL': {'price': 167.69, 'volume': 70, 'imbalance': -1}, 'META': {'price': 663.08, 'volume': 3, 'imbalance': 7}, 'NFLX': {'price': 567.88, 'volume': 10, 'imbalance': -5}, 'AMD': {'price': 180.94, 'volume': 53, 'imbalance': -7}, 'INTC': {'price': 24.23, 'volume': 18, 'imbalance': 4}}}
+15:40:17 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 3 ticks
+15:40:17 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 3 ticks {'ticks_left': 3, 'symbols': {'AAPL': {'price': 223.0, 'volume': 40, 'imbalance': -7}, 'MSFT': {'price': 418.42, 'volume': 10, 'imbalance': 0}, 'NVDA': {'price': 109.76, 'volume': 20, 'imbalance': -10}, 'TSLA': {'price': 243.97, 'volume': 32, 'imbalance': 1}, 'AMZN': {'price': 176.99, 'volume': 2, 'imbalance': 18}, 'GOOGL': {'price': 167.69, 'volume': 70, 'imbalance': -1}, 'META': {'price': 663.08, 'volume': 3, 'imbalance': 7}, 'NFLX': {'price': 567.88, 'volume': 10, 'imbalance': -5}, 'AMD': {'price': 180.94, 'volume': 53, 'imbalance': -7}, 'INTC': {'price': 24.13, 'volume': 28, 'imbalance': 4}}}
+15:40:18 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 2 ticks
+15:40:18 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 2 ticks {'ticks_left': 2, 'symbols': {'AAPL': {'price': 223.0, 'volume': 40, 'imbalance': -7}, 'MSFT': {'price': 418.42, 'volume': 10, 'imbalance': 0}, 'NVDA': {'price': 109.76, 'volume': 20, 'imbalance': -10}, 'TSLA': {'price': 243.97, 'volume': 32, 'imbalance': 1}, 'AMZN': {'price': 176.99, 'volume': 2, 'imbalance': 18}, 'GOOGL': {'price': 167.69, 'volume': 70, 'imbalance': -1}, 'META': {'price': 663.08, 'volume': 3, 'imbalance': 7}, 'NFLX': {'price': 567.88, 'volume': 10, 'imbalance': -5}, 'AMD': {'price': 180.94, 'volume': 53, 'imbalance': -7}, 'INTC': {'price': 24.11, 'volume': 46, 'imbalance': 16}}}
+15:40:19 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 1 ticks
+15:40:19 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 1 ticks {'ticks_left': 1, 'symbols': {'AAPL': {'price': 222.81, 'volume': 80, 'imbalance': -3}, 'MSFT': {'price': 418.42, 'volume': 10, 'imbalance': 0}, 'NVDA': {'price': 109.76, 'volume': 20, 'imbalance': -10}, 'TSLA': {'price': 243.97, 'volume': 32, 'imbalance': 1}, 'AMZN': {'price': 176.99, 'volume': 2, 'imbalance': 18}, 'GOOGL': {'price': 167.69, 'volume': 70, 'imbalance': -1}, 'META': {'price': 663.08, 'volume': 3, 'imbalance': 7}, 'NFLX': {'price': 567.88, 'volume': 10, 'imbalance': -5}, 'AMD': {'price': 180.94, 'volume': 53, 'imbalance': -7}, 'INTC': {'price': 24.1, 'volume': 66, 'imbalance': 3}}}
+15:40:25 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+15:40:25 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 1541832, 'week': 4, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+15:40:25 INFO    trader.trader: Session event: IPO_ANNOUNCE — IPO: Orca Analytics (ORCA) — 4,000 shares at $24.00–28.00; book opens t150, lists t550
+15:40:25 INFO    team.trader: EVENT IPO_ANNOUNCE — IPO: Orca Analytics (ORCA) — 4,000 shares at $24.00–28.00; book opens t150, lists t550 {'symbol': 'ORCA', 'name': 'Orca Analytics', 'shares': 4000, 'offer_range': [24.0, 28.0], 'window': [150, 450], 'list_tick': 550, 'state': 'announced', 'offer_price': None}
+15:40:25 INFO    trader.trader: Session event: SESSION_OPEN — Trading session is now OPEN. Bots activate!
+15:40:25 INFO    trader.trader: Session event: AUCTION_RESULT — Opening auction complete — continuous trading begins
+15:40:25 INFO    team.trader: EVENT AUCTION_RESULT — Opening auction complete — continuous trading begins {'phase': 'open', 'symbols': {'AAPL': {'price': 222.59, 'volume': 80}, 'MSFT': {'price': 418.42, 'volume': 10}, 'NVDA': {'price': 109.76, 'volume': 20}, 'TSLA': {'price': 243.97, 'volume': 32}, 'AMZN': {'price': 176.99, 'volume': 3}, 'GOOGL': {'price': 167.66, 'volume': 61}, 'META': {'price': 663.08, 'volume': 3}, 'NFLX': {'price': 567.82, 'volume': 15}, 'AMD': {'price': 180.94, 'volume': 54}, 'INTC': {'price': 24.08, 'volume': 69}}}
+15:43:27 INFO    trader.trader: Session event: IPO_OPEN — ORCA book is OPEN — subscribe with quantity and max price ($24.00–28.00) before t450
+15:43:27 INFO    team.trader: IPO ORCA: bidding 200 @ 28.00 (range 24.00–28.00)
+15:43:27 INFO    team.trader: EVENT IPO_OPEN — ORCA book is OPEN — subscribe with quantity and max price ($24.00–28.00) before t450 {'symbol': 'ORCA', 'name': 'Orca Analytics', 'shares': 4000, 'offer_range': [24.0, 28.0], 'window': [150, 450], 'list_tick': 550, 'state': 'open', 'offer_price': None}
+15:43:27 INFO    trader.trader: Session event: IPO_SUB_RESULT — indication recorded: 200 ORCA up to $28.00
+15:43:27 INFO    team.trader: EVENT IPO_SUB_RESULT — indication recorded: 200 ORCA up to $28.00 {'ok': True, 'symbol': 'ORCA'}
+15:43:27 INFO    team.trader: IPO SUBSCRIPTION ACCEPTED: ORCA
+15:45:05 INFO    trader.trader: Session event: CALENDAR — Upcoming: earnings AMZN @ t350
+15:45:05 INFO    team.trader: EVENT CALENDAR — Upcoming: earnings AMZN @ t350 {'tick': 1542062, 'week': 4, 'events': [], 'imminent': [{'kind': 'earnings', 'tick': 350, 'symbol': 'AMZN', 'magnitude_range': [0.03, 0.08]}], 'announce_lead': 120, 'early': False}
+15:46:20 INFO    trader.trader: Connecting to wss://feed.algoarena-st.duckdns.org (EXCHANGE_URL from the shell)
+15:46:20 INFO    trader.trader: Connected to wss://feed.algoarena-st.duckdns.org as butter_chicken_pasta_trader_1 (trader)
+15:46:20 INFO    trader.trader: Session event: FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps
+15:46:20 INFO    team.trader: EVENT FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps {'port': 8765, 'taker': 0.003, 'rebate': 0.0005, 'net': 0.0025, 'old': {'taker': 0.003, 'rebate': 0.0005}, 'new': {'taker': 0.003, 'rebate': 0.0005}}
+15:46:20 INFO    trader.trader: Session event: SESSION_OPEN — Session already open — you joined mid-session.
+15:46:20 INFO    trader.trader: Session event: IPO_OPEN — ORCA book is OPEN — subscribe before t450
+15:46:20 INFO    team.trader: IPO ORCA: bidding 200 @ 28.00 (range 24.00–28.00)
+15:46:20 INFO    team.trader: EVENT IPO_OPEN — ORCA book is OPEN — subscribe before t450 {'symbol': 'ORCA', 'name': 'Orca Analytics', 'shares': 4000, 'offer_range': [24.0, 28.0], 'window': [150, 450], 'list_tick': 550, 'state': 'open', 'offer_price': None, 'late_join': True}
+15:46:21 INFO    trader.trader: Session event: IPO_SUB_RESULT — indication recorded: 200 ORCA up to $28.00
+15:46:21 INFO    team.trader: EVENT IPO_SUB_RESULT — indication recorded: 200 ORCA up to $28.00 {'ok': True, 'symbol': 'ORCA'}
+15:46:21 INFO    team.trader: IPO SUBSCRIPTION ACCEPTED: ORCA
+15:46:26 INFO    team.trader: POST-CROSS BUY 1 MSFT @ 418.58
+15:46:26 DEBUG   trader.trader: Placed: buy 1 MSFT @ 418.5800
+15:46:26 DEBUG   trader.trader: Ack: buy 1 MSFT @ 418.5800
+15:46:26 INFO    trader.trader: Fill: bought 1 MSFT @ 418.5800 (fee=0.6279)
+15:46:26 INFO    team.trader: FILL BUY 1 MSFT @ 418.58
+15:46:26 DEBUG   trader.trader: Portfolio: net_worth=306888.89
+15:47:41 INFO    trader.trader: Session event: CALENDAR_EVENT — Earnings: AMZN moving -7.9%
+15:47:41 INFO    team.trader: EVENT CALENDAR_EVENT — Earnings: AMZN moving -7.9% {'kind': 'earnings', 'symbol': 'AMZN', 'market_wide': False, 'pct': -0.079096, 'affected': ['AMZN'], 'ramp_ticks': 15, 'overshoot': 1.3, 'tick': 1542182}
+15:47:41 INFO    team.trader: SHOCK DETECTED: AMZN (event=CALENDAR_EVENT pct=-0.079096)
+15:47:54 INFO    trader.trader: Session event: SSR_ON — AMZN is now under the short-sale rule — shorts must add liquidity above the bid
+15:47:54 INFO    team.trader: EVENT SSR_ON — AMZN is now under the short-sale rule — shorts must add liquidity above the bid {'symbol': 'AMZN'}
+15:48:12 INFO    team.trader: SHOCK EXPIRED: AMZN (no fillable ask for 60 ticks)
+15:49:50 DEBUG   trader.trader: Portfolio: net_worth=306734.42
+15:49:50 INFO    trader.trader: Session event: IPO_PRICED — ORCA priced at $28.00 — 5,917 shares subscribed for 4,000 offered; lists t550
+15:49:50 INFO    team.trader: EVENT IPO_PRICED — ORCA priced at $28.00 — 5,917 shares subscribed for 4,000 offered; lists t550 {'symbol': 'ORCA', 'name': 'Orca Analytics', 'shares': 4000, 'offer_range': [24.0, 28.0], 'window': [150, 450], 'list_tick': 550, 'state': 'priced', 'offer_price': 28.0}
+15:49:50 INFO    team.trader: IPO_PRICED: {'symbol': 'ORCA', 'name': 'Orca Analytics', 'shares': 4000, 'offer_range': [24.0, 28.0], 'window': [150, 450], 'list_tick': 550, 'state': 'priced', 'offer_price': 28.0}
+15:50:28 INFO    trader.trader: Connecting to wss://feed.algoarena-st.duckdns.org (EXCHANGE_URL from the shell)
+15:50:30 INFO    trader.trader: Connected to wss://feed.algoarena-st.duckdns.org as butter_chicken_pasta_trader_1 (trader)
+15:50:32 INFO    trader.trader: Session event: FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps
+15:50:32 INFO    team.trader: EVENT FEE_SCHEDULE — Venue fee schedule: taker 30.0 bps, maker rebate 5.0 bps {'port': 8765, 'taker': 0.003, 'rebate': 0.0005, 'net': 0.0025, 'old': {'taker': 0.003, 'rebate': 0.0005}, 'new': {'taker': 0.003, 'rebate': 0.0005}}
+15:50:32 INFO    trader.trader: Session event: SESSION_OPEN — Session already open — you joined mid-session.
+15:50:37 INFO    team.trader: POST-CROSS BUY 1 MSFT @ 418.65
+15:50:37 DEBUG   trader.trader: Placed: buy 1 MSFT @ 418.6500
+15:50:38 DEBUG   trader.trader: Ack: buy 1 MSFT @ 418.6500
+15:50:38 INFO    trader.trader: Fill: bought 1 MSFT @ 418.6500 (fee=0.6280)
+15:50:38 INFO    team.trader: FILL BUY 1 MSFT @ 418.65
+15:50:38 DEBUG   trader.trader: Portfolio: net_worth=306732.84
+15:51:58 INFO    trader.trader: Session event: IPO_LISTED — ORCA is now trading — offered at $28.00. Where it belongs is yours to discover.
+15:51:58 INFO    team.trader: EVENT IPO_LISTED — ORCA is now trading — offered at $28.00. Where it belongs is yours to discover. {'symbol': 'ORCA', 'name': 'Orca Analytics', 'shares': 4000, 'offer_range': [24.0, 28.0], 'window': [150, 450], 'list_tick': 550, 'state': 'listed', 'offer_price': 28.0}
+15:51:58 INFO    team.trader: IPO_LISTED: {'symbol': 'ORCA', 'name': 'Orca Analytics', 'shares': 4000, 'offer_range': [24.0, 28.0], 'window': [150, 450], 'list_tick': 550, 'state': 'listed', 'offer_price': 28.0}
+15:52:56 DEBUG   trader.trader: Portfolio: net_worth=306875.37
+15:52:56 INFO    trader.trader: Session event: DIVIDEND — AAPL pays $0.25/share — longs credited, shorts debited, price marked down ex-dividend
+15:52:56 INFO    team.trader: EVENT DIVIDEND — AAPL pays $0.25/share — longs credited, shorts debited, price marked down ex-dividend {'symbol': 'AAPL', 'amount_per_share': 0.25, 'net_paid': 508.0, 'tick': 1542432}
+15:54:38 INFO    trader.trader: Session event: CALENDAR — Upcoming: earnings GOOGL @ t800
+15:54:38 INFO    team.trader: EVENT CALENDAR — Upcoming: earnings GOOGL @ t800 {'tick': 1542512, 'week': 4, 'events': [], 'imminent': [{'kind': 'earnings', 'tick': 800, 'symbol': 'GOOGL', 'magnitude_range': [0.03, 0.08]}], 'announce_lead': 120, 'early': False}
+15:57:09 INFO    trader.trader: Session event: CALENDAR_EVENT — Earnings: GOOGL moving -5.7%
+15:57:09 INFO    team.trader: EVENT CALENDAR_EVENT — Earnings: GOOGL moving -5.7% {'kind': 'earnings', 'symbol': 'GOOGL', 'market_wide': False, 'pct': -0.056566, 'affected': ['GOOGL'], 'ramp_ticks': 15, 'overshoot': 1.3, 'tick': 1542632}
+15:57:09 INFO    team.trader: SHOCK DETECTED: GOOGL (event=CALENDAR_EVENT pct=-0.056566)
+16:01:51 INFO    trader.trader: Session event: CALENDAR — Upcoming: econ_print MARKET @ t1150
+16:01:51 INFO    team.trader: EVENT CALENDAR — Upcoming: econ_print MARKET @ t1150 {'tick': 1542862, 'week': 4, 'events': [], 'imminent': [{'kind': 'econ_print', 'tick': 1150, 'market_wide': True, 'magnitude_range': [0.01, 0.025]}], 'announce_lead': 120, 'early': False}
+16:02:10 INFO    team.trader: SHOCK EXPIRED: GOOGL (no fillable ask for 600 ticks)
+16:04:17 INFO    trader.trader: Session event: CALENDAR_EVENT — Econ Print: market-wide moving -2.5%
+16:04:17 INFO    team.trader: EVENT CALENDAR_EVENT — Econ Print: market-wide moving -2.5% {'kind': 'econ_print', 'symbol': None, 'market_wide': True, 'pct': -0.02487, 'affected': ['AAPL', 'MSFT', 'NVDA', 'TSLA', 'AMZN', 'GOOGL', 'META', 'NFLX', 'AMD', 'INTC', 'ARENA10', 'ORCA'], 'ramp_ticks': 15, 'overshoot': 1.3, 'tick': 1542982}
+16:04:37 INFO    trader.trader: Session event: SSR_ON — NFLX is now under the short-sale rule — shorts must add liquidity above the bid
+16:04:37 INFO    team.trader: EVENT SSR_ON — NFLX is now under the short-sale rule — shorts must add liquidity above the bid {'symbol': 'NFLX'}
+16:08:18 INFO    trader.trader: Session event: UPGRADE_PURCHASED — STT_11 bought Prime brokerage terms for $40,000 — margin haircut 0.50 → 0.65, cheaper carry on borrowed cash
+16:08:18 INFO    team.trader: EVENT UPGRADE_PURCHASED — STT_11 bought Prime brokerage terms for $40,000 — margin haircut 0.50 → 0.65, cheaper carry on borrowed cash {'team': 'STT_11', 'upgrade': 'margin_plus', 'cost': 40000.0, 'split': {'stt_11_broker_1': 15123.92, 'stt_11_broker_2': 6305.41, 'stt_11_trader_1': 6429.84, 'stt_11_trader_2': 6045.82, 'stt_11_trader_3': 6095.01}, 'effect': 'margin haircut 0.50 → 0.65, cheaper carry on borrowed cash'}
+16:30:00 INFO    trader.trader: Session event: SESSION_CLOSED — Trading session is now CLOSED. Flatten positions.
+16:30:00 INFO    team.trader: Session closed — keeping positions (no close-time orders)
+16:30:12 INFO    trader.trader: Session event: SESSION_CLOSED — Trading session is now CLOSED. Flatten positions.
+16:30:12 INFO    team.trader: Session closed — keeping positions (no close-time orders)
+16:30:20 INFO    trader.trader: Session event: WEEK_CHANGED — Week 0: Open play
+16:30:20 INFO    team.trader: EVENT WEEK_CHANGED — Week 0: Open play {'week': 0, 'label': 'Open play', 'flags': {'shorts_allowed': True, 'post_only_allowed': True, 'circuit_breakers': False, 'cancellation_fees': False, 'latency_enabled': False, 'multi_venue': True, 'futures_enabled': False, 'purchase_window': False}, 'position_limit': None, 'order_quota': None, 'maintenance_fraction': None, 'scoring_counts': False, 'config': {}, 'events': []}
+16:30:20 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+16:30:20 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 1544237, 'week': 0, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+16:30:22 DEBUG   trader.trader: Portfolio: net_worth=320281.77
+16:30:22 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+16:30:22 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 1544238, 'week': 0, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+16:30:22 INFO    trader.trader: Session event: SESSION_OPEN — Trading session is now OPEN. Bots activate!
