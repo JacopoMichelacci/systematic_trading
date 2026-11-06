@@ -15,3 +15,7 @@ personal/
 
 # Bot logs (team/trader.py writes logs/<TEAM_ID>.log)
 logs/
+hw4/sessions/
+hw4/*.sqlite
+hw4/hw4.parquet/
+hw4/out_*.md
