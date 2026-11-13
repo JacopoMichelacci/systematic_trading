@@ -9,7 +9,8 @@ team/       ← YOUR code (created by make register — 3 small files, your whol
 arena/      ← the SDK you derive: Trader, Broker, Exchange (read these, ~100 lines each)
 docs/       ← guides (start with docs/CONNECTING.md)
 engine/     ← the market infrastructure. Read it when curious. Never edit it.
-scripts/    ← the registration wizard and connection test
+scripts/    ← registration wizard, connection test, season simulator, tape replay
+season/     ← the ten week scenarios (rules + event calendar of each Friday block)
 tests/      ← offline tests + the no-network simulator
 ```
 
@@ -31,7 +32,7 @@ the teacher can see it. Never fork or push to the template itself.
 ## 1. Set up
 
 ```bash
-uv sync
+pip install -r requirements.txt
 ```
 
 ## 2. Register your team
@@ -65,7 +66,8 @@ dashboard.
 
 - `team/trader.py` → `MyTrader.on_tick()` — your edge
 - `team/broker.py` → quoting + inventory management (Level 4 keeps you solvent)
-- Test offline, no network needed: `make sim` and `make test`
+- Test offline, no network needed: `make sim`, `make season WEEK=3` (that week's rules and event calendar, from `season/week03.json`) and `make test`
+- Replay a Friday recording (posted in the Canvas module after class): put it in `sessions/`, run `make replay FILE=sessions/<file>` in one terminal (it serves the tape as a local exchange on port 8765), and in another run your bot against it with `EXCHANGE_HOST=localhost make trader BOT=<id>`. The live dashboard is on the hosted venue only.
 
 **Full connection guide (read this first): [docs/CONNECTING.md](docs/CONNECTING.md)**
 

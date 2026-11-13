@@ -7,9 +7,12 @@ export
 ARENA_URL ?= https://arena.example.edu
 # The engine lives under engine/ — every target needs it importable.
 export PYTHONPATH := engine:.
+# The season's week scenarios ship under season/ so the simulator runs offline.
+export SEASON_DIR := season
+export SEASON_PERSIST := false
 
 install:
-	uv sync
+	pip install -r requirements.txt
 
 register:
 	python scripts/create_team.py --remote $(ARENA_URL)
@@ -33,7 +36,16 @@ exchange:
 sim:
 	python tests/sim_session.py
 
+# Simulate a graded week offline against the house bots: make season WEEK=3
+WEEK ?= 1
+season:
+	python scripts/season_sim.py --weeks $(WEEK)
+
+# Replay a recorded block as a local exchange: make replay FILE=sessions/<file>
+replay:
+	python scripts/replay_session.py $(FILE) --speed 5
+
 test:
 	pytest tests/ -q
 
-.PHONY: install register trader broker exchange sim test
+.PHONY: install register trader broker exchange sim season replay test
