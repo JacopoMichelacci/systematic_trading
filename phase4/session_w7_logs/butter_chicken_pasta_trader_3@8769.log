@@ -1,0 +1,230 @@
+12:04:12 INFO    trader.trader: Connecting to wss://feed-8769.algoarena-st.duckdns.org (EXCHANGE_URL from the shell)
+12:04:13 INFO    trader.trader: Connected to wss://feed-8769.algoarena-st.duckdns.org as butter_chicken_pasta_trader_3 (trader)
+12:04:13 INFO    team.trader: Portfolio synced from the leaderboard: cash=62500, 0 symbols held
+12:04:13 INFO    trader.trader: Session event: FEE_SCHEDULE — Venue fee schedule: taker 11.0 bps, maker rebate 7.0 bps
+12:04:13 INFO    team.trader: EVENT FEE_SCHEDULE — Venue fee schedule: taker 11.0 bps, maker rebate 7.0 bps {'port': 8769, 'taker': 0.0011, 'rebate': 0.0007, 'net': 0.0004, 'old': {'taker': 0.0011, 'rebate': 0.0007}, 'new': {'taker': 0.0011, 'rebate': 0.0007}}
+12:04:13 INFO    team.trader: TAKER FEE 11 bp -> liquidity-taking strategies OFF (fee limit 50 bp, BCP_TAKING not set)
+12:04:13 DEBUG   trader.trader: Portfolio: net_worth=77828.69
+12:04:13 INFO    trader.trader: Session event: SESSION_OPEN — Session already open — you joined mid-session.
+12:04:59 INFO    team.trader: Stopped by Ctrl-C
+15:20:41 INFO    trader.trader: Connecting to wss://feed-8769.algoarena-st.duckdns.org (EXCHANGE_URL from the shell)
+15:20:42 INFO    trader.trader: Connected to wss://feed-8769.algoarena-st.duckdns.org as butter_chicken_pasta_trader_3 (trader)
+15:20:42 INFO    team.trader: Portfolio synced from the leaderboard: cash=62500, 11 symbols held
+15:20:42 INFO    trader.trader: Session event: FEE_SCHEDULE — Venue fee schedule: taker 11.0 bps, maker rebate 7.0 bps
+15:20:42 INFO    team.trader: EVENT FEE_SCHEDULE — Venue fee schedule: taker 11.0 bps, maker rebate 7.0 bps {'port': 8769, 'taker': 0.0011, 'rebate': 0.0007, 'net': 0.0004, 'old': {'taker': 0.0011, 'rebate': 0.0007}, 'new': {'taker': 0.0011, 'rebate': 0.0007}}
+15:20:42 INFO    team.trader: TAKER FEE 11 bp -> liquidity-taking strategies OFF (fee limit 50 bp, BCP_TAKING not set)
+15:20:42 INFO    trader.trader: Session event: SESSION_OPEN — Session already open — you joined mid-session.
+15:30:01 INFO    team.trader: Session closed — 0 taker orders ($0), flashes answered 0 of 0 seen, keeping positions (no close-time orders, no cancels)
+15:30:01 INFO    trader.trader: Session event: SESSION_CLOSED — Trading session is now CLOSED. Flatten positions.
+15:30:21 INFO    trader.trader: Session event: WEEK_CHANGED — Week 7: Execution in a fast market — quotas, latency, cancel fees, flashes; borrow tightens; window 2
+15:30:21 INFO    team.trader: EVENT WEEK_CHANGED — Week 7: Execution in a fast market — quotas, latency, cancel fees, flashes; borrow tightens; window 2 {'week': 7, 'label': 'Execution in a fast market — quotas, latency, cancel fees, flashes; borrow tightens; window 2', 'flags': {'shorts_allowed': True, 'post_only_allowed': True, 'circuit_breakers': True, 'cancellation_fees': True, 'latency_enabled': True, 'multi_venue': True, 'futures_enabled': False, 'purchase_window': True}, 'position_limit': 1000, 'order_quota': 8, 'maintenance_fraction': None, 'scoring_counts': True, 'config': {'OPENING_AUCTION_TICKS': 12, 'CLOSING_AUCTION': True, 'CLOSING_AUCTION_TICKS': 10, 'SSR_TRIGGER_PCT': 0.08, 'SHORT_LOCATE_CAP': 1200, 'LULD_BAND_PCT': 0.08, 'SNAPSHOT_INTERVAL_SEC': 0.2}, 'events': [{'kind': 'earnings', 'tick': 400, 'symbol': 'TSLA', 'magnitude_range': [0.05, 0.1]}, {'kind': 'earnings', 'tick': 900, 'symbol': 'AAPL', 'magnitude_range': [0.03, 0.08]}, {'kind': 'econ_print', 'tick': 650, 'magnitude_range': [0.015, 0.03], 'market_wide': True}, {'kind': 'dividend', 'tick': 1200, 'symbol': 'META', 'amount_per_share': 0.5}]}
+15:30:21 INFO    team.trader: POSITION LIMIT 1000 (week 7) -> our caps: 100 per seat, 500 per team
+15:30:22 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+15:30:22 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 1002380, 'week': 7, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+15:40:01 DEBUG   trader.trader: Portfolio: net_worth=93462.26
+15:40:01 INFO    trader.trader: Session event: SESSION_PREOPEN — Pre-open: limit orders only — the opening auction crosses in 12 ticks
+15:40:01 INFO    team.trader: EVENT SESSION_PREOPEN — Pre-open: limit orders only — the opening auction crosses in 12 ticks {'symbols': ['AAPL', 'MSFT', 'NVDA', 'TSLA', 'AMZN', 'GOOGL', 'META', 'NFLX', 'AMD', 'INTC', 'ARENA10', 'VLTA'], 'ticks': 12}
+15:40:01 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 11 ticks
+15:40:01 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 11 ticks {'ticks_left': 11, 'symbols': {}}
+15:40:02 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 10 ticks
+15:40:02 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 10 ticks {'ticks_left': 10, 'symbols': {'AMZN': {'price': 223.43, 'volume': 2, 'imbalance': -3}}}
+15:40:03 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 9 ticks
+15:40:03 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 9 ticks {'ticks_left': 9, 'symbols': {'AMZN': {'price': 223.43, 'volume': 4, 'imbalance': -3}}}
+15:40:04 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 8 ticks
+15:40:04 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 8 ticks {'ticks_left': 8, 'symbols': {'AMZN': {'price': 214.91, 'volume': 4, 'imbalance': -6}, 'GOOGL': {'price': 174.04, 'volume': 3, 'imbalance': -7}, 'INTC': {'price': 23.94, 'volume': 1, 'imbalance': 9}}}
+15:40:05 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 7 ticks
+15:40:05 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 7 ticks {'ticks_left': 7, 'symbols': {'MSFT': {'price': 443.91, 'volume': 3, 'imbalance': 7}, 'AMZN': {'price': 214.91, 'volume': 4, 'imbalance': -6}, 'GOOGL': {'price': 174.04, 'volume': 3, 'imbalance': -7}, 'INTC': {'price': 23.94, 'volume': 1, 'imbalance': 9}}}
+15:40:06 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 6 ticks
+15:40:06 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 6 ticks {'ticks_left': 6, 'symbols': {'TSLA': {'price': 346.35, 'volume': 3, 'imbalance': 7}, 'AMZN': {'price': 215.68, 'volume': 4, 'imbalance': -6}, 'GOOGL': {'price': 174.04, 'volume': 3, 'imbalance': -7}, 'INTC': {'price': 23.94, 'volume': 1, 'imbalance': 9}}}
+15:40:07 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 5 ticks
+15:40:07 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 5 ticks {'ticks_left': 5, 'symbols': {'TSLA': {'price': 346.35, 'volume': 3, 'imbalance': 7}, 'AMZN': {'price': 216.04, 'volume': 4, 'imbalance': -6}, 'GOOGL': {'price': 174.04, 'volume': 3, 'imbalance': -7}}}
+15:40:08 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 4 ticks
+15:40:08 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 4 ticks {'ticks_left': 4, 'symbols': {'TSLA': {'price': 346.35, 'volume': 3, 'imbalance': 7}, 'AMZN': {'price': 216.38, 'volume': 4, 'imbalance': -6}, 'GOOGL': {'price': 174.04, 'volume': 3, 'imbalance': -7}}}
+15:40:10 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 3 ticks
+15:40:10 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 3 ticks {'ticks_left': 3, 'symbols': {'TSLA': {'price': 346.35, 'volume': 3, 'imbalance': 7}, 'AMZN': {'price': 216.99, 'volume': 4, 'imbalance': -6}, 'GOOGL': {'price': 174.04, 'volume': 3, 'imbalance': -7}}}
+15:40:11 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 2 ticks
+15:40:11 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 2 ticks {'ticks_left': 2, 'symbols': {'MSFT': {'price': 443.7, 'volume': 2, 'imbalance': 8}, 'TSLA': {'price': 346.35, 'volume': 3, 'imbalance': 7}, 'AMZN': {'price': 217.29, 'volume': 4, 'imbalance': -6}, 'GOOGL': {'price': 174.04, 'volume': 3, 'imbalance': -7}}}
+15:40:12 INFO    trader.trader: Session event: AUCTION_INDICATIVE — Opening cross in 1 ticks
+15:40:12 INFO    team.trader: EVENT AUCTION_INDICATIVE — Opening cross in 1 ticks {'ticks_left': 1, 'symbols': {'MSFT': {'price': 443.7, 'volume': 2, 'imbalance': 8}, 'TSLA': {'price': 346.35, 'volume': 3, 'imbalance': 7}, 'AMZN': {'price': 217.29, 'volume': 4, 'imbalance': -6}, 'GOOGL': {'price': 174.04, 'volume': 3, 'imbalance': -7}}}
+15:40:13 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+15:40:13 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 1002963, 'week': 7, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+15:40:13 INFO    trader.trader: Session event: SESSION_OPEN — Trading session is now OPEN. Bots activate!
+15:40:13 INFO    trader.trader: Session event: AUCTION_RESULT — Opening auction complete — continuous trading begins
+15:40:13 INFO    team.trader: EVENT AUCTION_RESULT — Opening auction complete — continuous trading begins {'phase': 'open', 'symbols': {'MSFT': {'price': 443.7, 'volume': 2}, 'TSLA': {'price': 346.35, 'volume': 3}, 'AMZN': {'price': 217.86, 'volume': 4}, 'GOOGL': {'price': 174.04, 'volume': 3}}}
+15:41:03 INFO    trader.trader: Session event: TRADING_HALT — Trading halted on AMD: AMD velocity halt: 9.4% move in 60s (threshold 5.0%)
+15:41:03 INFO    team.trader: EVENT TRADING_HALT — Trading halted on AMD: AMD velocity halt: 9.4% move in 60s (threshold 5.0%) {'symbol': 'AMD', 'reason': 'AMD velocity halt: 9.4% move in 60s (threshold 5.0%)', 'duration': 300, 'resume_at': 1794606363.095879, 'halt_num': 1}
+15:41:03 WARNING team.trader: HALT: AMD for 300s — no orders in it
+15:42:07 INFO    trader.trader: Session event: FLASH — Flash: TSLA -2.39%, reverting over 2 ticks
+15:42:07 INFO    team.trader: EVENT FLASH — Flash: TSLA -2.39%, reverting over 2 ticks {'symbol': 'TSLA', 'pct': -0.02389, 'revert_ticks': 2, 'tick': 1003075, 'session_tick': 112, 'start_price': 346.7976}
+15:42:07 INFO    team.trader: FLASH ORDER BUY 1 TSLA @ 338.51 (flash -2.39% from 346.80, 0 ms after the event)
+15:42:07 DEBUG   trader.trader: Placed: buy 1 TSLA @ 338.5100
+15:42:07 DEBUG   trader.trader: Ack: buy 1 TSLA @ 338.5100
+15:43:46 INFO    trader.trader: Session event: FLASH — Flash: META +2.08%, reverting over 2 ticks
+15:43:46 INFO    team.trader: EVENT FLASH — Flash: META +2.08%, reverting over 2 ticks {'symbol': 'META', 'pct': 0.020847, 'revert_ticks': 2, 'tick': 1003171, 'session_tick': 208, 'start_price': 597.2315}
+15:43:46 INFO    team.trader: FLASH ORDER SELL 1 META @ 609.69 (flash +2.08% from 597.23, 0 ms after the event)
+15:43:46 DEBUG   trader.trader: Placed: sell 1 META @ 609.6900
+15:43:46 DEBUG   trader.trader: Ack: sell 1 META @ 609.6900
+15:44:59 INFO    trader.trader: Session event: CALENDAR — Upcoming: earnings TSLA @ t400
+15:44:59 INFO    team.trader: EVENT CALENDAR — Upcoming: earnings TSLA @ t400 {'tick': 1003243, 'week': 7, 'events': [], 'imminent': [{'kind': 'earnings', 'tick': 400, 'symbol': 'TSLA', 'magnitude_range': [0.05, 0.1]}], 'announce_lead': 120, 'early': False}
+15:46:03 INFO    trader.trader: Session event: TRADING_RESUMED — Trading resumed on AMD
+15:46:03 INFO    team.trader: EVENT TRADING_RESUMED — Trading resumed on AMD {'symbol': 'AMD'}
+15:46:03 INFO    team.trader: RESUMED: AMD (TRADING_RESUMED) — activity resumes
+15:47:01 INFO    trader.trader: Session event: CALENDAR_EVENT — Earnings: TSLA moving +5.7%
+15:47:01 INFO    team.trader: EVENT CALENDAR_EVENT — Earnings: TSLA moving +5.7% {'kind': 'earnings', 'symbol': 'TSLA', 'market_wide': False, 'pct': 0.056871, 'affected': ['TSLA'], 'ramp_ticks': 15, 'overshoot': 1.3, 'tick': 1003363}
+15:47:01 INFO    team.trader: EVENT QUEUED: TSLA (CALENDAR_EVENT pct=0.056871)
+15:47:10 INFO    trader.trader: Session event: TRADING_HALT — Trading halted on TSLA: TSLA velocity halt: 5.0% move in 60s (threshold 5.0%)
+15:47:10 INFO    team.trader: EVENT TRADING_HALT — Trading halted on TSLA: TSLA velocity halt: 5.0% move in 60s (threshold 5.0%) {'symbol': 'TSLA', 'reason': 'TSLA velocity halt: 5.0% move in 60s (threshold 5.0%)', 'duration': 300, 'resume_at': 1794606730.6475108, 'halt_num': 1}
+15:47:10 WARNING team.trader: HALT: TSLA for 300s — no orders in it
+15:49:14 INFO    trader.trader: Session event: CALENDAR — Upcoming: econ_print MARKET @ t650
+15:49:14 INFO    team.trader: EVENT CALENDAR — Upcoming: econ_print MARKET @ t650 {'tick': 1003493, 'week': 7, 'events': [], 'imminent': [{'kind': 'econ_print', 'tick': 650, 'market_wide': True, 'magnitude_range': [0.015, 0.03]}], 'announce_lead': 120, 'early': False}
+15:49:47 INFO    trader.trader: Session event: FLASH — Flash: AAPL +2.15%, reverting over 2 ticks
+15:49:47 INFO    team.trader: EVENT FLASH — Flash: AAPL +2.15%, reverting over 2 ticks {'symbol': 'AAPL', 'pct': 0.021541, 'revert_ticks': 2, 'tick': 1003519, 'session_tick': 556, 'start_price': 225.199}
+15:49:47 INFO    team.trader: FLASH ORDER SELL 1 AAPL @ 230.06 (flash +2.15% from 225.20, 0 ms after the event)
+15:49:47 DEBUG   trader.trader: Placed: sell 1 AAPL @ 230.0600
+15:49:47 DEBUG   trader.trader: Ack: sell 1 AAPL @ 230.0600
+15:49:56 INFO    trader.trader: Fill: sold   1 AAPL @ 230.0600 (fee=0.1265)
+15:49:56 INFO    team.trader: FILL SELL 1 AAPL @ 230.06
+15:49:56 DEBUG   trader.trader: Portfolio: net_worth=93753.48
+15:51:24 INFO    trader.trader: Session event: CALENDAR_EVENT — Econ Print: market-wide moving -1.6%
+15:51:24 INFO    team.trader: EVENT CALENDAR_EVENT — Econ Print: market-wide moving -1.6% {'kind': 'econ_print', 'symbol': None, 'market_wide': True, 'pct': -0.015858, 'affected': ['AAPL', 'MSFT', 'NVDA', 'TSLA', 'AMZN', 'GOOGL', 'META', 'NFLX', 'AMD', 'INTC', 'ARENA10', 'VLTA'], 'ramp_ticks': 15, 'overshoot': 1.3, 'tick': 1003613}
+15:52:11 INFO    trader.trader: Session event: TRADING_RESUMED — Trading resumed on TSLA
+15:52:11 INFO    team.trader: EVENT TRADING_RESUMED — Trading resumed on TSLA {'symbol': 'TSLA'}
+15:52:11 INFO    team.trader: RESUMED: TSLA (TRADING_RESUMED) — activity resumes
+15:52:41 INFO    trader.trader: Session event: TRADING_HALT — Trading halted on INTC: INTC velocity halt: 6.0% move in 60s (threshold 5.0%)
+15:52:41 INFO    team.trader: EVENT TRADING_HALT — Trading halted on INTC: INTC velocity halt: 6.0% move in 60s (threshold 5.0%) {'symbol': 'INTC', 'reason': 'INTC velocity halt: 6.0% move in 60s (threshold 5.0%)', 'duration': 300, 'resume_at': 1794607060.9136605, 'halt_num': 1}
+15:52:41 WARNING team.trader: HALT: INTC for 300s — no orders in it
+15:52:46 INFO    trader.trader: Session event: TRADING_HALT — Trading halted on AMD: AMD velocity halt: 8.4% move in 60s (threshold 5.0%)
+15:52:46 INFO    team.trader: EVENT TRADING_HALT — Trading halted on AMD: AMD velocity halt: 8.4% move in 60s (threshold 5.0%) {'symbol': 'AMD', 'reason': 'AMD velocity halt: 8.4% move in 60s (threshold 5.0%)', 'duration': 300, 'resume_at': 1794607066.1216354, 'halt_num': 2}
+15:52:46 WARNING team.trader: HALT: AMD for 300s — no orders in it
+15:53:38 INFO    trader.trader: Session event: CALENDAR — Upcoming: earnings AAPL @ t900
+15:53:38 INFO    team.trader: EVENT CALENDAR — Upcoming: earnings AAPL @ t900 {'tick': 1003743, 'week': 7, 'events': [], 'imminent': [{'kind': 'earnings', 'tick': 900, 'symbol': 'AAPL', 'magnitude_range': [0.03, 0.08]}], 'announce_lead': 120, 'early': False}
+15:55:31 INFO    trader.trader: Session event: SSR_ON — NFLX is now under the short-sale rule — shorts must add liquidity above the bid
+15:55:31 INFO    team.trader: EVENT SSR_ON — NFLX is now under the short-sale rule — shorts must add liquidity above the bid {'symbol': 'NFLX'}
+15:55:41 INFO    trader.trader: Session event: CALENDAR_EVENT — Earnings: AAPL moving -5.5%
+15:55:41 INFO    team.trader: EVENT CALENDAR_EVENT — Earnings: AAPL moving -5.5% {'kind': 'earnings', 'symbol': 'AAPL', 'market_wide': False, 'pct': -0.054999, 'affected': ['AAPL'], 'ramp_ticks': 15, 'overshoot': 1.3, 'tick': 1003863}
+15:55:41 INFO    team.trader: EVENT QUEUED: AAPL (CALENDAR_EVENT pct=-0.054999)
+15:55:52 INFO    trader.trader: Session event: TRADING_HALT — Trading halted on AAPL: AAPL velocity halt: 5.2% move in 60s (threshold 5.0%)
+15:55:52 INFO    team.trader: EVENT TRADING_HALT — Trading halted on AAPL: AAPL velocity halt: 5.2% move in 60s (threshold 5.0%) {'symbol': 'AAPL', 'reason': 'AAPL velocity halt: 5.2% move in 60s (threshold 5.0%)', 'duration': 300, 'resume_at': 1794607251.8783345, 'halt_num': 1}
+15:55:52 WARNING team.trader: HALT: AAPL for 300s — no orders in it
+15:56:46 INFO    trader.trader: Session event: FLASH — Flash: TSLA +2.29%, reverting over 2 ticks
+15:56:46 INFO    team.trader: EVENT FLASH — Flash: TSLA +2.29%, reverting over 2 ticks {'symbol': 'TSLA', 'pct': 0.022917, 'revert_ticks': 2, 'tick': 1003920, 'session_tick': 957, 'start_price': 356.4942}
+15:56:46 INFO    team.trader: FLASH ORDER SELL 1 TSLA @ 364.67 (flash +2.29% from 356.49, 0 ms after the event)
+15:56:46 DEBUG   trader.trader: Placed: sell 1 TSLA @ 364.6700
+15:56:46 DEBUG   trader.trader: Ack: sell 1 TSLA @ 364.6700
+15:57:41 INFO    trader.trader: Session event: TRADING_RESUMED — Trading resumed on INTC
+15:57:41 INFO    team.trader: EVENT TRADING_RESUMED — Trading resumed on INTC {'symbol': 'INTC'}
+15:57:41 INFO    team.trader: RESUMED: INTC (TRADING_RESUMED) — activity resumes
+15:57:46 INFO    trader.trader: Session event: TRADING_RESUMED — Trading resumed on AMD
+15:57:46 INFO    team.trader: EVENT TRADING_RESUMED — Trading resumed on AMD {'symbol': 'AMD'}
+15:57:46 INFO    team.trader: RESUMED: AMD (TRADING_RESUMED) — activity resumes
+15:58:22 INFO    trader.trader: Session event: TRADING_HALT — Trading halted on AMD: AMD velocity halt: 5.5% move in 60s (threshold 5.0%)
+15:58:22 INFO    team.trader: EVENT TRADING_HALT — Trading halted on AMD: AMD velocity halt: 5.5% move in 60s (threshold 5.0%) {'symbol': 'AMD', 'reason': 'AMD velocity halt: 5.5% move in 60s (threshold 5.0%)', 'duration': 300, 'resume_at': 1794607402.261337, 'halt_num': 3}
+15:58:22 WARNING team.trader: HALT: AMD for 300s — no orders in it
+15:58:33 INFO    trader.trader: Session event: TRADING_HALT — Trading halted on INTC: INTC velocity halt: 5.7% move in 60s (threshold 5.0%)
+15:58:33 INFO    team.trader: EVENT TRADING_HALT — Trading halted on INTC: INTC velocity halt: 5.7% move in 60s (threshold 5.0%) {'symbol': 'INTC', 'reason': 'INTC velocity halt: 5.7% move in 60s (threshold 5.0%)', 'duration': 300, 'resume_at': 1794607413.1669059, 'halt_num': 2}
+15:58:33 WARNING team.trader: HALT: INTC for 300s — no orders in it
+15:58:51 INFO    trader.trader: Session event: CALENDAR — Upcoming: dividend META @ t1200
+15:58:51 INFO    team.trader: EVENT CALENDAR — Upcoming: dividend META @ t1200 {'tick': 1004043, 'week': 7, 'events': [], 'imminent': [{'kind': 'dividend', 'tick': 1200, 'symbol': 'META', 'amount_per_share': 0.5}], 'announce_lead': 120, 'early': False}
+15:59:18 INFO    trader.trader: Session event: FLASH — Flash: GOOGL -1.66%, reverting over 2 ticks
+15:59:18 INFO    team.trader: EVENT FLASH — Flash: GOOGL -1.66%, reverting over 2 ticks {'symbol': 'GOOGL', 'pct': -0.016648, 'revert_ticks': 2, 'tick': 1004069, 'session_tick': 1106, 'start_price': 180.1562}
+15:59:18 INFO    team.trader: FLASH ORDER BUY 1 GOOGL @ 177.15 (flash -1.66% from 180.16, 0 ms after the event)
+15:59:18 DEBUG   trader.trader: Placed: buy 1 GOOGL @ 177.1500
+15:59:19 DEBUG   trader.trader: Ack: buy 1 GOOGL @ 177.1500
+16:00:58 INFO    trader.trader: Session event: TRADING_RESUMED — Trading resumed on AAPL
+16:00:58 INFO    team.trader: EVENT TRADING_RESUMED — Trading resumed on AAPL {'symbol': 'AAPL'}
+16:00:58 INFO    team.trader: RESUMED: AAPL (TRADING_RESUMED) — activity resumes
+16:01:03 DEBUG   trader.trader: Portfolio: net_worth=93313.22
+16:01:03 INFO    trader.trader: Session event: DIVIDEND — META pays $0.50/share — longs credited, shorts debited, price marked down ex-dividend
+16:01:03 INFO    team.trader: EVENT DIVIDEND — META pays $0.50/share — longs credited, shorts debited, price marked down ex-dividend {'symbol': 'META', 'amount_per_share': 0.5, 'net_paid': 195.5, 'tick': 1004163}
+16:02:05 INFO    trader.trader: Session event: FLASH — Flash: TSLA -1.76%, reverting over 2 ticks
+16:02:05 INFO    team.trader: EVENT FLASH — Flash: TSLA -1.76%, reverting over 2 ticks {'symbol': 'TSLA', 'pct': -0.01756, 'revert_ticks': 2, 'tick': 1004222, 'session_tick': 1259, 'start_price': 358.1332}
+16:02:05 INFO    team.trader: FLASH ORDER BUY 1 TSLA @ 351.84 (flash -1.76% from 358.13, 0 ms after the event)
+16:02:05 DEBUG   trader.trader: Placed: buy 1 TSLA @ 351.8400
+16:02:05 DEBUG   trader.trader: Ack: buy 1 TSLA @ 351.8400
+16:03:22 INFO    trader.trader: Session event: TRADING_RESUMED — Trading resumed on AMD
+16:03:22 INFO    team.trader: EVENT TRADING_RESUMED — Trading resumed on AMD {'symbol': 'AMD'}
+16:03:22 INFO    team.trader: RESUMED: AMD (TRADING_RESUMED) — activity resumes
+16:03:33 INFO    trader.trader: Session event: TRADING_RESUMED — Trading resumed on INTC
+16:03:33 INFO    team.trader: EVENT TRADING_RESUMED — Trading resumed on INTC {'symbol': 'INTC'}
+16:03:33 INFO    team.trader: RESUMED: INTC (TRADING_RESUMED) — activity resumes
+16:05:46 INFO    trader.trader: Session event: FLASH — Flash: META +1.82%, reverting over 2 ticks
+16:05:46 INFO    team.trader: EVENT FLASH — Flash: META +1.82%, reverting over 2 ticks {'symbol': 'META', 'pct': 0.018202, 'revert_ticks': 2, 'tick': 1004437, 'session_tick': 1474, 'start_price': 593.9255}
+16:05:46 INFO    team.trader: FLASH ORDER SELL 1 META @ 604.74 (flash +1.82% from 593.93, 0 ms after the event)
+16:05:46 DEBUG   trader.trader: Placed: sell 1 META @ 604.7400
+16:05:46 DEBUG   trader.trader: Ack: sell 1 META @ 604.7400
+16:08:26 INFO    trader.trader: Session event: FLASH — Flash: AAPL +2.33%, reverting over 2 ticks
+16:08:26 INFO    team.trader: EVENT FLASH — Flash: AAPL +2.33%, reverting over 2 ticks {'symbol': 'AAPL', 'pct': 0.023256, 'revert_ticks': 2, 'tick': 1004592, 'session_tick': 1629, 'start_price': 226.243}
+16:08:26 INFO    team.trader: FLASH ORDER SELL 1 AAPL @ 231.51 (flash +2.33% from 226.24, 0 ms after the event)
+16:08:26 DEBUG   trader.trader: Placed: sell 1 AAPL @ 231.5100
+16:08:27 DEBUG   trader.trader: Ack: sell 1 AAPL @ 231.5100
+16:08:42 INFO    trader.trader: Fill: sold   1 AAPL @ 231.5100 (fee=0.1273)
+16:08:42 INFO    team.trader: FILL SELL 1 AAPL @ 231.51
+16:08:42 DEBUG   trader.trader: Portfolio: net_worth=93577.98
+16:09:55 INFO    trader.trader: Session event: FLASH — Flash: VLTA -2.45%, reverting over 2 ticks
+16:09:55 INFO    team.trader: EVENT FLASH — Flash: VLTA -2.45%, reverting over 2 ticks {'symbol': 'VLTA', 'pct': -0.02447, 'revert_ticks': 2, 'tick': 1004678, 'session_tick': 1715, 'start_price': 32.0647}
+16:09:55 INFO    team.trader: FLASH ORDER BUY 1 VLTA @ 31.28 (flash -2.45% from 32.06, 0 ms after the event)
+16:09:55 DEBUG   trader.trader: Placed: buy 1 VLTA @ 31.2800
+16:09:55 DEBUG   trader.trader: Ack: buy 1 VLTA @ 31.2800
+16:13:04 INFO    trader.trader: Session event: FLASH — Flash: AMZN +1.86%, reverting over 2 ticks
+16:13:04 INFO    team.trader: EVENT FLASH — Flash: AMZN +1.86%, reverting over 2 ticks {'symbol': 'AMZN', 'pct': 0.018603, 'revert_ticks': 2, 'tick': 1004862, 'session_tick': 1899, 'start_price': 219.1773}
+16:13:04 INFO    team.trader: FLASH ORDER SELL 1 AMZN @ 223.26 (flash +1.86% from 219.18, 0 ms after the event)
+16:13:04 DEBUG   trader.trader: Placed: sell 1 AMZN @ 223.2600
+16:13:04 DEBUG   trader.trader: Ack: sell 1 AMZN @ 223.2600
+16:14:58 INFO    trader.trader: Session event: FLASH — Flash: GOOGL +1.54%, reverting over 2 ticks
+16:14:58 INFO    team.trader: EVENT FLASH — Flash: GOOGL +1.54%, reverting over 2 ticks {'symbol': 'GOOGL', 'pct': 0.015413, 'revert_ticks': 2, 'tick': 1004974, 'session_tick': 2011, 'start_price': 184.8266}
+16:14:58 INFO    team.trader: FLASH ORDER SELL 1 GOOGL @ 187.68 (flash +1.54% from 184.83, 0 ms after the event)
+16:14:58 DEBUG   trader.trader: Placed: sell 1 GOOGL @ 187.6800
+16:14:58 DEBUG   trader.trader: Ack: sell 1 GOOGL @ 187.6800
+16:15:04 INFO    trader.trader: Fill: sold   1 GOOGL @ 187.6800 (fee=0.1032)
+16:15:04 INFO    team.trader: FILL SELL 1 GOOGL @ 187.68
+16:15:04 DEBUG   trader.trader: Portfolio: net_worth=93636.31
+16:18:09 INFO    trader.trader: Session event: FLASH — Flash: MSFT +1.61%, reverting over 2 ticks
+16:18:09 INFO    team.trader: EVENT FLASH — Flash: MSFT +1.61%, reverting over 2 ticks {'symbol': 'MSFT', 'pct': 0.016121, 'revert_ticks': 2, 'tick': 1005159, 'session_tick': 2196, 'start_price': 443.0475}
+16:18:09 INFO    team.trader: FLASH ORDER SELL 1 MSFT @ 450.19 (flash +1.61% from 443.05, 0 ms after the event)
+16:18:09 DEBUG   trader.trader: Placed: sell 1 MSFT @ 450.1900
+16:18:10 DEBUG   trader.trader: Ack: sell 1 MSFT @ 450.1900
+16:20:20 INFO    trader.trader: Fill: sold   1 META @ 604.7400 (fee=0.3326)
+16:20:20 INFO    team.trader: FILL SELL 1 META @ 604.74
+16:20:20 DEBUG   trader.trader: Portfolio: net_worth=93791.21
+16:20:53 INFO    trader.trader: Session event: FLASH — Flash: VLTA +2.10%, reverting over 2 ticks
+16:20:53 INFO    team.trader: EVENT FLASH — Flash: VLTA +2.10%, reverting over 2 ticks {'symbol': 'VLTA', 'pct': 0.020989, 'revert_ticks': 2, 'tick': 1005319, 'session_tick': 2356, 'start_price': 31.9067}
+16:20:53 INFO    team.trader: FLASH ORDER SELL 1 VLTA @ 32.58 (flash +2.10% from 31.91, 0 ms after the event)
+16:20:53 DEBUG   trader.trader: Placed: sell 1 VLTA @ 32.5800
+16:20:54 DEBUG   trader.trader: Ack: sell 1 VLTA @ 32.5800
+16:22:39 INFO    trader.trader: Session event: FLASH — Flash: MSFT -2.04%, reverting over 2 ticks
+16:22:39 INFO    team.trader: EVENT FLASH — Flash: MSFT -2.04%, reverting over 2 ticks {'symbol': 'MSFT', 'pct': -0.020394, 'revert_ticks': 2, 'tick': 1005422, 'session_tick': 2459, 'start_price': 445.0829}
+16:22:39 INFO    team.trader: FLASH ORDER BUY 1 MSFT @ 436.00 (flash -2.04% from 445.08, 0 ms after the event)
+16:22:39 DEBUG   trader.trader: Placed: buy 1 MSFT @ 436.0000
+16:22:40 DEBUG   trader.trader: Ack: buy 1 MSFT @ 436.0000
+16:26:20 INFO    trader.trader: Session event: FLASH — Flash: MSFT +2.18%, reverting over 2 ticks
+16:26:20 INFO    team.trader: EVENT FLASH — Flash: MSFT +2.18%, reverting over 2 ticks {'symbol': 'MSFT', 'pct': 0.021791, 'revert_ticks': 2, 'tick': 1005636, 'session_tick': 2673, 'start_price': 448.4484}
+16:26:20 INFO    team.trader: FLASH ORDER SELL 1 MSFT @ 458.23 (flash +2.18% from 448.45, 0 ms after the event)
+16:26:20 DEBUG   trader.trader: Placed: sell 1 MSFT @ 458.2300
+16:26:20 DEBUG   trader.trader: Ack: sell 1 MSFT @ 458.2300
+16:26:21 INFO    trader.trader: Fill: sold   1 MSFT @ 450.1900 (fee=0.2476)
+16:26:21 INFO    team.trader: FILL SELL 1 MSFT @ 450.19
+16:26:21 DEBUG   trader.trader: Portfolio: net_worth=93940.76
+16:26:44 INFO    trader.trader: Fill: sold   1 TSLA @ 364.6700 (fee=0.2006)
+16:26:44 INFO    team.trader: FILL SELL 1 TSLA @ 364.67
+16:26:44 DEBUG   trader.trader: Portfolio: net_worth=93884.95
+16:28:09 INFO    trader.trader: Session event: FLASH — Flash: NVDA +1.60%, reverting over 2 ticks
+16:28:09 INFO    team.trader: EVENT FLASH — Flash: NVDA +1.60%, reverting over 2 ticks {'symbol': 'NVDA', 'pct': 0.015962, 'revert_ticks': 2, 'tick': 1005742, 'session_tick': 2779, 'start_price': 136.9939}
+16:28:09 INFO    team.trader: FLASH ORDER SELL 1 NVDA @ 139.19 (flash +1.60% from 136.99, 0 ms after the event)
+16:28:09 DEBUG   trader.trader: Placed: sell 1 NVDA @ 139.1900
+16:28:10 DEBUG   trader.trader: Ack: sell 1 NVDA @ 139.1900
+16:30:11 INFO    trader.trader: Session event: SESSION_PRECLOSE — Closing auction: limit orders only — the market closes on the cross in 10 ticks
+16:30:11 INFO    team.trader: EVENT SESSION_PRECLOSE — Closing auction: limit orders only — the market closes on the cross in 10 ticks {'ticks': 10}
+16:30:11 INFO    team.trader: Closing auction — no more orders this session
+16:30:22 INFO    trader.trader: Session event: AUCTION_RESULT — Closing auction complete
+16:30:22 INFO    team.trader: EVENT AUCTION_RESULT — Closing auction complete {'phase': 'close', 'symbols': {'MSFT': {'price': 449.22, 'volume': 1}}}
+16:30:22 INFO    team.trader: Session closed — 0 taker orders ($0), flashes answered 16 of 16 seen, keeping positions (no close-time orders, no cancels)
+16:30:22 INFO    trader.trader: Session event: SESSION_CLOSED — Trading session is now CLOSED. Flatten positions.
+16:30:26 INFO    trader.trader: Session event: WEEK_CHANGED — Week 0: Open play
+16:30:26 INFO    team.trader: EVENT WEEK_CHANGED — Week 0: Open play {'week': 0, 'label': 'Open play', 'flags': {'shorts_allowed': True, 'post_only_allowed': True, 'circuit_breakers': False, 'cancellation_fees': False, 'latency_enabled': False, 'multi_venue': True, 'futures_enabled': False, 'purchase_window': False}, 'position_limit': None, 'order_quota': None, 'maintenance_fraction': None, 'scoring_counts': False, 'config': {}, 'events': []}
+16:30:26 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+16:30:26 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 1005873, 'week': 0, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+16:30:27 DEBUG   trader.trader: Portfolio: net_worth=109311.48
+16:30:27 INFO    trader.trader: Session event: CALENDAR — No scheduled events this session
+16:30:27 INFO    team.trader: EVENT CALENDAR — No scheduled events this session {'tick': 1005875, 'week': 0, 'events': [], 'imminent': [], 'announce_lead': 120, 'early': False}
+16:30:27 INFO    trader.trader: Session event: SESSION_OPEN — Trading session is now OPEN. Bots activate!
+16:35:07 INFO    team.trader: Stopped by Ctrl-C
