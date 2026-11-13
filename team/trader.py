@@ -1,24 +1,32 @@
-"""Risk-first, long-only trader for butter_chicken_pasta (weeks 5–6).
+"""Risk-first trader for butter_chicken_pasta (weeks 5–7).
 
-What the live block grades, and where it is handled:
+What the live blocks grade, and where it is handled:
 
-  no forced liquidation        long-only, cash-funded 1-share buys under a
-                               per-session notional budget; never short,
-                               never margin, never futures  -> _check_buy()
+  act on the flashes (wk 7)    one 1-share limit order on the flashed symbol,
+                               sent from inside the FLASH event handler (no
+                               wait for the next tick), priced at the far end
+                               of the jump: accepted at once, filled only at
+                               a ~2% better price          -> _flash_signal()
+  quota rejections < 5%        one message per flash and per seat, nothing
+                               else on an expensive venue; never a cancel, so
+                               the cancellation-fee bill is $0
+  O(1) hot path                on_tick / on_event do constant work: no scan
+                               of the price history, no sorting
+  no forced liquidation        cash-funded 1-share orders under per-session
+                               budgets; never short, never margin, never
+                               futures                      -> _check_buy()
   position <= scenario limit   hard caps in code, at SEAT and at TEAM scope
-                               (the venue enforces the limit per team), fed by
-                               the scenario's position_limit    -> _caps()
-  survive a halt, then resume  no orders to a halted symbol; a buy in that
-                               symbol as soon as TRADING_RESUMED arrives
-                               (or the halt times out)  -> halted / _resume_step()
+                               (the venue enforces the limit per team)
+  survive a halt, then resume  no orders to a halted symbol -> halted
   a bid in the IPO bookbuild   on_ipo(): top of the range, small size
   connected >= 80%             nothing here may raise into the SDK's listen
                                loop (that drops the socket); run the seats
                                under `python -m team.run_block`
 
-So that a halt always lands on "a symbol the bot trades", the bot buys one
-share of every equity shortly after the opening cross (the seed basket) and
-then keeps a slow heartbeat of 1-share buys going for the whole block.
+"Do the arithmetic before every trade": the liquidity-TAKING strategies (seed
+basket, earnings buys, heartbeat, resume buys) run only on a venue whose
+published taker fee is at most MAX_TAKER_FEE. On the house venue at 200 bp
+they are off and the bot only answers flashes, passively.
 
 Run one seat:   TEAM_ID=butter_chicken_pasta_trader_1 python -m team.trader
 Run them all:   python -m team.run_block
@@ -49,7 +57,6 @@ logger = logging.getLogger("team.trader")
 # settlement), no freshly listed IPO names (thin books).
 TRADABLE = ("MSFT", "INTC", "AAPL", "NVDA", "TSLA",
             "AMZN", "GOOGL", "META", "NFLX", "AMD")
-PREFERRED_SYMBOL = "MSFT"
 QUANTITY = 1
 TEAM_BOT_IDS = frozenset(BROKER_IDS) | frozenset(TRADER_IDS)
 
@@ -87,7 +94,20 @@ HEARTBEAT_TICKS = 240               # an order at least every ~2 min
 RESUME_SETTLE_TICKS = 6             # after a resume, let quotes come back
 RESUME_FALLBACK_TICKS = 60          # then trade another symbol instead
 MAX_EVENT_WAIT_TICKS = 600          # drop an unfillable earnings event
-MAX_MOMENTUM_ORDERS = 3
+
+# ── fees ────────────────────────────────────────────────────────────────
+# Liquidity-taking strategies run only where the venue's published taker fee
+# is at most this (a fraction of notional). Unknown fee = do not take.
+MAX_TAKER_FEE = 0.005
+DEFAULT_TAKER_FEE: float | None = None
+
+# ── flashes (week 7) ────────────────────────────────────────────────────
+# A flash: one symbol jumps pct (1.5–2.5%) and walks back within ~2 ticks.
+# Graded: an order on that symbol within 5 s of the FLASH event.
+FLASH_MAX_AGE_SEC = 4.0             # older than this: too late, send nothing
+MAX_FLASH_ORDERS = 60               # per session (15–20 flashes expected)
+FLASH_MAX_PCT = 0.03                # never price further than this from fair
+FLASH_KEEP_SHARES = 5               # a flash sell never takes us below this
 
 # ── halts, in seconds ───────────────────────────────────────────────────
 DEFAULT_HALT_SEC = 300.0            # the venue's per-symbol halt
@@ -101,7 +121,8 @@ def _valid_price(price) -> bool:
 
 
 class MyTrader(Trader):
-    """BUY-only, 1 share at a time, every order through _check_buy()."""
+    """One share at a time. Taker orders are BUY-only via _check_buy();
+    the only sells are passive flash orders out of shares already held."""
 
     def __init__(self) -> None:
         self.team_id: str = os.environ.get("TEAM_ID", "")
@@ -119,6 +140,8 @@ class MyTrader(Trader):
         self.in_preclose: bool = False
         self.liquidated: bool = False
         self.risk_off: bool = False
+        # The venue's taker fee (FEE_SCHEDULE, sent at every connect).
+        self.taker_fee: float | None = DEFAULT_TAKER_FEE
 
         # Halts: symbol -> local time after which we stop believing it.
         self.halted: dict[str, float] = {}
@@ -139,8 +162,11 @@ class MyTrader(Trader):
         self.resume_queue: list[dict] = []
         self.pending_events: list[dict] = []
         self.seen_events: set[tuple] = set()
-        self.last_momentum_signal: tuple | None = None
-        self.momentum_orders: int = 0
+        self.pending_flash: dict | None = None
+        self.flashes_seen: int = 0
+        self.flash_orders: int = 0
+        self.resting_sells: dict[str, int] = {}
+        self._flash_made: Signal | None = None
 
     # ── the one gate every order goes through ───────────────────────────
 
@@ -316,31 +342,6 @@ class MyTrader(Trader):
                 return signal
         return None
 
-    def _momentum_step(self, market, portfolio) -> Signal | None:
-        """Buy-only MSFT 5/20 cross; a bearish cross does nothing."""
-        if self.momentum_orders >= MAX_MOMENTUM_ORDERS:
-            return None
-        symbol = PREFERRED_SYMBOL
-        prices = market.prices(symbol)
-        if len(prices) < 21 or not all(_valid_price(p) for p in prices[-21:]):
-            return None
-        prev_ma5 = sum(prices[-6:-1]) / 5
-        prev_ma20 = sum(prices[-21:-1]) / 20
-        ma5 = sum(prices[-5:]) / 5
-        ma20 = sum(prices[-20:]) / 20
-        if not (prev_ma5 <= prev_ma20 and ma5 > ma20):
-            return None
-        signature = ("buy", tuple(prices[-21:]))
-        if signature == self.last_momentum_signal:
-            return None
-        signal, _ = self._check_buy(market, portfolio, symbol)
-        if signal is None:
-            return None
-        self.last_momentum_signal = signature
-        self.momentum_orders += 1
-        logger.info("MOMENTUM BUY %d %s @ %.2f", QUANTITY, symbol, signal.price)
-        return signal
-
     def _heartbeat_step(self, market, portfolio) -> Signal | None:
         """Keep trading through the block: an order every couple of minutes."""
         if self.tick_count - self.last_order_tick < HEARTBEAT_TICKS:
@@ -351,10 +352,112 @@ class MyTrader(Trader):
                         signal.symbol, signal.price)
         return signal
 
+    # ── flashes ─────────────────────────────────────────────────────────
+
+    def _room_to_buy(self, portfolio, symbol: str) -> bool:
+        """Seat and team caps for one more share (unknown book: allowed —
+        one resting share cannot breach a limit the venue also enforces)."""
+        if not getattr(portfolio, "synced", True):
+            return True
+        own = int(portfolio.positions.get(symbol, 0))
+        seat_cap, team_cap = self._caps()
+        teammates = getattr(portfolio, "teammates", None)
+        team = own + (int(teammates.get(symbol, 0))
+                      if isinstance(teammates, dict)
+                      else own * (len(TEAM_BOT_IDS) - 1))
+        cash = portfolio.cash
+        return (own + QUANTITY <= seat_cap and team + QUANTITY <= team_cap
+                and isinstance(cash, (int, float)) and math.isfinite(cash))
+
+    def _flash_signal(self, market, portfolio) -> Signal | None:
+        """The order that answers the pending flash, or None. O(1).
+
+        The limit sits at the far end of the jump, start × (1 ± |pct|):
+          flash up, and we hold the shares  -> SELL at the top
+          otherwise                         -> BUY at the bottom
+        The venue accepts it at once (that is what is graded). It fills only
+        if the price actually gets there, ~2% better than fair value, and the
+        price is walking back within two ticks. If it does not fill it rests
+        and costs nothing: we never cancel, so there is no cancellation fee.
+        """
+        flash, self.pending_flash = self.pending_flash, None
+        if flash is None:
+            return None
+        symbol, pct = flash["symbol"], flash["pct"]
+        age = self._now() - flash["at"]
+        blocker = None
+        if age > FLASH_MAX_AGE_SEC:
+            blocker = f"{age:.1f}s old — too late"
+        elif self.liquidated or self.risk_off:
+            blocker = "risk stop"
+        elif self.in_preopen or self.in_preclose:
+            blocker = "auction"
+        elif self.market_halt_until is not None or symbol in self.halted:
+            blocker = "halted"
+        elif self.flash_orders >= MAX_FLASH_ORDERS:
+            blocker = "flash order budget"
+        if blocker:
+            logger.info("FLASH %s not answered: %s", symbol, blocker)
+            return None
+
+        ref = flash["start"]
+        if not _valid_price(ref):
+            ref = market.mid_price(symbol)
+        if not _valid_price(ref):
+            ref = market.best_bid(symbol) or market.best_ask(symbol)
+        if not _valid_price(ref):
+            logger.info("FLASH %s not answered: no reference price", symbol)
+            return None
+        size = min(abs(pct), FLASH_MAX_PCT)
+
+        synced = getattr(portfolio, "synced", True)
+        own = int(portfolio.positions.get(symbol, 0)) if synced else 0
+        spare = own - self.resting_sells.get(symbol, 0) - FLASH_KEEP_SHARES
+        can_sell = synced and spare >= QUANTITY
+        can_buy = self._room_to_buy(portfolio, symbol) and (
+            not synced or portfolio.cash >= ref * QUANTITY * BUY_CASH_BUFFER)
+
+        if (pct > 0 and can_sell) or (not can_buy and can_sell):
+            side = "sell"
+            price = math.ceil(ref * (1 + size) * 100) / 100
+        elif can_buy:
+            side = "buy"
+            price = math.floor(ref * (1 - size) * 100) / 100
+        else:
+            logger.info("FLASH %s not answered: no room to buy or sell", symbol)
+            return None
+        if not _valid_price(price):
+            return None
+
+        signal = Signal(symbol=symbol, side=side, quantity=QUANTITY, price=price)
+        self.flash_orders += 1
+        self.last_order_tick = self.tick_count
+        if side == "sell":
+            self.resting_sells[symbol] = self.resting_sells.get(symbol, 0) + 1
+        self._flash_made = signal
+        logger.info("FLASH ORDER %s %d %s @ %.2f (flash %+.2f%% from %.2f, "
+                    "%.0f ms after the event)", side.upper(), QUANTITY, symbol,
+                    price, pct * 100, ref, age * 1000)
+        return signal
+
+    def take_flash(self, market, portfolio) -> Signal | None:
+        """Called by _SeatBot the moment a FLASH event arrives. Never raises."""
+        try:
+            return self._flash_signal(market, portfolio)
+        except Exception:
+            logger.exception("flash reaction failed — ignored")
+            return None
+
     # ── hooks ───────────────────────────────────────────────────────────
 
     def _decide(self, market, portfolio) -> Signal | None:
         self._expire_halts()
+
+        # A flash not yet answered from the event handler: answer it now.
+        if self.pending_flash is not None:
+            signal = self._flash_signal(market, portfolio)
+            if signal is not None:
+                return signal
 
         # Hard stops.
         if self.liquidated or self.risk_off:
@@ -380,8 +483,11 @@ class MyTrader(Trader):
         if self.tick_count - self.active_tick < POST_CROSS_WAIT_TICKS:
             return None
 
+        # Liquidity-taking strategies: only where taking is cheap enough.
+        if self.taker_fee is None or self.taker_fee > MAX_TAKER_FEE:
+            return None
         for step in (self._resume_step, self._earnings_step, self._seed_step,
-                     self._momentum_step, self._heartbeat_step):
+                     self._heartbeat_step):
             signal = step(market, portfolio)
             if signal is not None:
                 return signal
@@ -396,6 +502,8 @@ class MyTrader(Trader):
             return None
         if signal is None:
             return None
+        if signal is self._flash_made:      # built and recorded by _flash_signal
+            return signal
         # Fail closed, whatever a future strategy change returns.
         if (signal.side != "buy" or signal.symbol not in TRADABLE
                 or signal.quantity != QUANTITY
@@ -444,7 +552,26 @@ class MyTrader(Trader):
     def _handle_event(self, event: str, data: dict) -> None:
         now = self._now()
 
-        if event == "WEEK_CHANGED":
+        if event == "FLASH":                        # hot path: O(1), first
+            self.flashes_seen += 1
+            symbol, pct = data.get("symbol"), data.get("pct")
+            if (isinstance(symbol, str) and isinstance(pct, (int, float))
+                    and not isinstance(pct, bool) and math.isfinite(pct)
+                    and pct != 0):
+                self.pending_flash = {"symbol": symbol, "pct": float(pct),
+                                      "start": data.get("start_price"),
+                                      "at": now}
+        elif event == "FEE_SCHEDULE":
+            taker = data.get("taker")
+            if (isinstance(taker, (int, float)) and not isinstance(taker, bool)
+                    and math.isfinite(taker) and taker >= 0
+                    and taker != self.taker_fee):
+                self.taker_fee = float(taker)
+                logger.info("TAKER FEE %.0f bp -> liquidity-taking strategies "
+                            "%s (limit %.0f bp)", taker * 1e4,
+                            "ON" if taker <= MAX_TAKER_FEE else "OFF",
+                            MAX_TAKER_FEE * 1e4)
+        elif event == "WEEK_CHANGED":
             self.on_scenario(data)
 
         # ── session phase ──
@@ -558,9 +685,10 @@ class MyTrader(Trader):
         self.in_preopen = False     # the venue re-sends SESSION_PREOPEN
 
     def on_session_closed(self) -> None:
-        logger.info("Session closed — %d orders sent, $%.0f spent, keeping "
-                    "positions (no close-time orders)",
-                    self.orders_sent, self.spent)
+        logger.info("Session closed — %d taker orders ($%.0f), flashes "
+                    "answered %d of %d seen, keeping positions (no close-time "
+                    "orders, no cancels)", self.orders_sent, self.spent,
+                    self.flash_orders, self.flashes_seen)
 
     def on_liquidated(self) -> None:
         if not self.liquidated:
@@ -598,8 +726,9 @@ class _SeatPortfolio(Portfolio):
 
 
 class _SeatBot(_AdaptedTraderBot):
-    """The SDK bot with three changes, all in this file.
+    """The SDK bot with four changes, all in this file.
 
+    0. A FLASH is answered from inside the event handler, at once.
     1. No close-time flatten. On SESSION_CLOSED the engine sends one market
        order per held symbol to a venue that is already closed, and every
        one is rejected. Positions carry over between sessions anyway.
@@ -664,6 +793,15 @@ class _SeatBot(_AdaptedTraderBot):
         except Exception:
             logger.exception("session hook failed — ignored")
         await super()._on_session_event(msg)
+        if msg.event == "FLASH" and self._session_open:
+            # Do not wait for the trading loop's next tick: the flash is
+            # gone in ~2 s and the reaction time is measured.
+            signal = self._owner.take_flash(self.market, self.portfolio)
+            if signal is not None:
+                try:
+                    await self._place_order(signal)
+                except Exception:
+                    logger.exception("flash order could not be sent")
 
 
 def _setup_logging() -> None:

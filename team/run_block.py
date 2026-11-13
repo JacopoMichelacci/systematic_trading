@@ -1,6 +1,6 @@
 """Run every seat for a live block and keep it connected.
 
-    python -m team.run_block               # 3 traders + the passive broker
+    python -m team.run_block               # 3 traders + the broker seat
     python -m team.run_block --no-broker   # traders only
     python -m team.run_block --start-at 15:15 --stop-at 16:35
                                            # unattended: wait, run, stop
@@ -10,6 +10,10 @@
 whenever you like and walk away: the machine is kept awake from the moment
 the command starts, the seats connect at --start-at and are stopped at
 --stop-at, so nothing keeps trading open play overnight.
+
+Every seat, the broker seat included, runs team.trader: the broker does not
+quote in graded blocks yet, but it answers flashes like the others (the venue
+takes each seat's role from the roster, not from the bot).
 
 Each seat is its own process (the engine reads TEAM_ID at import). The
 engine already reconnects by itself when the socket drops; this supervisor
@@ -55,6 +59,10 @@ class Seat:
         env = dict(os.environ)
         env["TEAM_ID"] = self.team_id
         env["PYTHONUNBUFFERED"] = "1"
+        # The trading loop is only the fallback path for a flash (the order
+        # normally leaves from the event handler); keep it as fast as the
+        # fast-market feed. on_tick is O(1), so this costs nothing.
+        env.setdefault("TICK_INTERVAL", "0.2")
         env["PYTHONPATH"] = os.pathsep.join(
             ["engine", ".", env.get("PYTHONPATH", "")]).rstrip(os.pathsep)
         with open(LOGS / f"console_{self.team_id}.log", "ab") as console:
@@ -96,6 +104,8 @@ class Seat:
         connected = "no log yet"
         rejects = 0
         orders = 0
+        flashes = 0
+        answered = 0
         last = ""
         if log.exists():
             lines = log.read_text(errors="replace").splitlines()
@@ -110,13 +120,17 @@ class Seat:
                    for ln in tail[1:]):
                 connected = "RECONNECTING"
             rejects = sum("Exchange error" in ln for ln in lines)
-            orders = sum(" BUY " in ln and "team.trader" in ln
-                         and "FILL" not in ln for ln in tail)
+            orders = sum((" BUY " in ln or " SELL " in ln)
+                         and "team.trader" in ln and "FILL" not in ln
+                         for ln in tail)
+            flashes = sum("EVENT FLASH" in ln for ln in tail)
+            answered = sum("FLASH ORDER" in ln for ln in tail)
             last = lines[-1][:8] if lines else ""
         alive = self.proc is not None and self.proc.poll() is None
         return (f"{self.team_id:<34} {'up' if alive else 'DOWN':<4} "
                 f"{connected:<19} starts={self.starts} orders={orders:<3} "
-                f"rejections={rejects} last_log={last}")
+                f"flashes={answered}/{flashes} rejections={rejects} "
+                f"last_log={last}")
 
 
 def _clock_arg(flag: str) -> float | None:
@@ -140,7 +154,7 @@ def main() -> None:
         sys.exit("--stop-at is not after now / --start-at — nothing to run")
     seats = [Seat(bot, "team.trader") for bot in TRADER_IDS]
     if "--no-broker" not in sys.argv:
-        seats += [Seat(bot, "team.passive_broker") for bot in BROKER_IDS]
+        seats += [Seat(bot, "team.trader") for bot in BROKER_IDS]
 
     awake = None
     if sys.platform == "darwin" and shutil.which("caffeinate"):

@@ -26,6 +26,13 @@ import team.trader as tt
 from team.passive_broker import PassiveBroker
 from team.trader import TRADABLE, MyTrader, _SeatBot
 
+@pytest.fixture(autouse=True)
+def _cheap_venue(monkeypatch):
+    """Weeks 3–6 behaviour is tested on a venue where taking is cheap; the
+    week-7 tests set the house venue's 200 bp themselves."""
+    monkeypatch.setattr(tt, "DEFAULT_TAKER_FEE", 0.001)
+
+
 PRICES = {"MSFT": 400.0, "INTC": 24.0, "AAPL": 220.0, "NVDA": 110.0,
           "TSLA": 240.0, "AMZN": 170.0, "GOOGL": 165.0, "META": 660.0,
           "NFLX": 570.0, "AMD": 180.0}
@@ -449,6 +456,7 @@ def test_ipo_passes_on_bad_terms(lo, hi, shares):
     "WEEK_CHANGED", "SESSION_PREOPEN", "AUCTION_RESULT", "SESSION_PRECLOSE",
     "TRADING_HALT", "TRADING_RESUMED", "MARKET_HALT", "MARKET_RESUMED",
     "LIQUIDATION", "MARGIN_CALL", "IPO_SUB_RESULT", "IPO_PRICED",
+    "FLASH", "FEE_SCHEDULE",
     "CALENDAR_EVENT", "SHOCK", "DIVIDEND", "SOMETHING_NEW"])
 @pytest.mark.parametrize("data", [
     None, {}, [], "text", {"symbol": None}, {"symbol": 5, "duration": "x"},
@@ -458,6 +466,219 @@ def test_on_event_survives_any_payload(event, data):
     bot, market, portfolio = MyTrader(), FakeMarket(), FakePortfolio()
     bot.on_event(event, "message", data)
     ticks(bot, market, portfolio, 50)           # and the bot still ticks
+
+
+# ── week 7: flashes, fees, and an O(1) hot path ────────────────────────
+
+HOUSE = {"taker": 0.02, "rebate": -0.005}
+
+
+def flash(bot, symbol, pct, start=None):
+    bot.on_event("FLASH", "flash", {
+        "symbol": symbol, "pct": pct, "revert_ticks": 2, "tick": 123,
+        "start_price": PRICES.get(symbol, 30.0) if start is None else start})
+
+
+def week7_bot(positions=None):
+    bot, market = MyTrader(), FakeMarket()
+    bot.on_event("FEE_SCHEDULE", "house", HOUSE)
+    portfolio = FakePortfolio(
+        positions={s: 40 for s in TRADABLE} if positions is None else positions,
+        teammates={})
+    return bot, market, portfolio
+
+
+def test_flash_down_is_answered_with_a_buy_at_the_bottom():
+    bot, market, portfolio = week7_bot()
+    flash(bot, "TSLA", -0.02)
+    signal = bot.take_flash(market, portfolio)
+    assert (signal.symbol, signal.side, signal.quantity) == ("TSLA", "buy", 1)
+    assert signal.price == 235.20               # 240 × 0.98, on the cent grid
+
+
+def test_flash_up_is_answered_with_a_sell_of_shares_we_hold():
+    bot, market, portfolio = week7_bot()
+    flash(bot, "AAPL", 0.025)
+    signal = bot.take_flash(market, portfolio)
+    assert (signal.symbol, signal.side, signal.quantity) == ("AAPL", "sell", 1)
+    assert signal.price == 225.50               # 220 × 1.025
+
+
+def test_flash_up_without_inventory_is_answered_with_a_passive_buy():
+    bot, market, portfolio = week7_bot(positions={})
+    flash(bot, "AAPL", 0.02)
+    signal = bot.take_flash(market, portfolio)
+    assert signal.side == "buy" and signal.price == 215.60     # 220 × 0.98
+
+
+def test_flash_orders_are_passive_never_marketable():
+    """Buys below the pre-flash bid, sells above the pre-flash ask."""
+    bot, market, portfolio = week7_bot()
+    for symbol in TRADABLE:
+        for pct in (-0.025, -0.015, 0.015, 0.025):
+            flash(bot, symbol, pct)
+            signal = bot.take_flash(market, portfolio)
+            if signal.side == "buy":
+                assert signal.price < market.best_bid(symbol)
+            else:
+                assert signal.price > market.best_ask(symbol)
+            assert abs(signal.price / PRICES[symbol] - 1) < 0.031  # in the band
+
+
+def test_flash_sells_never_take_the_position_below_the_floor():
+    bot, market, portfolio = week7_bot(
+        positions={"AAPL": tt.FLASH_KEEP_SHARES + 2})
+    sides = []
+    for _ in range(6):
+        flash(bot, "AAPL", 0.02)
+        sides.append(bot.take_flash(market, portfolio).side)
+    assert sides == ["sell", "sell", "buy", "buy", "buy", "buy"]
+
+
+def test_one_order_per_flash_and_none_without_one():
+    bot, market, portfolio = week7_bot()
+    assert bot.take_flash(market, portfolio) is None
+    flash(bot, "TSLA", -0.02)
+    assert bot.take_flash(market, portfolio) is not None
+    assert bot.take_flash(market, portfolio) is None
+    assert ticks(bot, market, portfolio, 500) == []
+
+
+def test_flash_is_answered_from_on_tick_if_the_event_path_did_not():
+    bot, market, portfolio = week7_bot()
+    flash(bot, "NVDA", -0.02)
+    signal = bot.on_tick(market, portfolio)     # very first tick, no warm-up
+    assert (signal.symbol, signal.side) == ("NVDA", "buy")
+    assert bot.on_tick(market, portfolio) is None
+
+
+def test_flash_on_an_ipo_name_is_answered_too():
+    bot, market, portfolio = week7_bot(positions={"ORCA": 158})
+    flash(bot, "ORCA", 0.02, start=30.0)
+    signal = bot.take_flash(market, portfolio)
+    assert (signal.symbol, signal.side, signal.price) == ("ORCA", "sell", 30.60)
+
+
+def test_flash_reference_falls_back_to_the_book_mid():
+    bot, market, portfolio = week7_bot()
+    bot.on_event("FLASH", "flash", {"symbol": "MSFT", "pct": -0.02})
+    signal = bot.take_flash(market, portfolio)
+    assert signal.side == "buy" and signal.price == 391.95     # 399.95 × 0.98
+
+
+def test_a_stale_flash_is_not_answered():
+    bot, market, portfolio = week7_bot()
+    clock = [100.0]
+    bot._now = lambda: clock[0]
+    flash(bot, "TSLA", -0.02)
+    clock[0] += tt.FLASH_MAX_AGE_SEC + 0.1
+    assert bot.take_flash(market, portfolio) is None
+
+
+@pytest.mark.parametrize("block", [
+    ("SESSION_PREOPEN", {"ticks": 12}), ("SESSION_PRECLOSE", {"ticks": 10}),
+    ("TRADING_HALT", {"symbol": "TSLA", "duration": 300}),
+    ("MARKET_HALT", {"level": 1, "duration": 900})])
+def test_no_flash_order_in_an_auction_or_a_halt(block):
+    bot, market, portfolio = week7_bot()
+    bot.on_event(*block[:1], "msg", block[1])
+    flash(bot, "TSLA", -0.02)
+    assert bot.take_flash(market, portfolio) is None
+
+
+def test_no_flash_order_after_a_liquidation(monkeypatch):
+    monkeypatch.setenv("TEAM_ID", "butter_chicken_pasta_trader_1")
+    bot, market, portfolio = week7_bot()
+    bot.on_event("LIQUIDATION", "x", {"team_id": "butter_chicken_pasta_trader_1"})
+    flash(bot, "TSLA", -0.02)
+    assert bot.take_flash(market, portfolio) is None
+
+
+def test_flash_buy_respects_the_position_caps():
+    bot, market, _ = week7_bot()
+    seat_cap, _ = bot._caps()
+    portfolio = FakePortfolio(positions={"TSLA": seat_cap}, teammates={})
+    flash(bot, "TSLA", -0.02)
+    signal = bot.take_flash(market, portfolio)
+    assert signal.side == "sell"                # at the cap: sell, never buy more
+    assert signal.price > market.best_ask("TSLA")
+
+
+def test_flash_is_answered_even_before_the_portfolio_is_known():
+    bot, market, portfolio = week7_bot()
+    portfolio.synced = False
+    flash(bot, "TSLA", 0.02)
+    assert bot.take_flash(market, portfolio).side == "buy"   # no blind sells
+
+
+def test_flash_order_budget():
+    bot, market, portfolio = week7_bot()
+    sent = 0
+    for _ in range(tt.MAX_FLASH_ORDERS + 10):
+        flash(bot, "TSLA", -0.02)
+        sent += bot.take_flash(market, portfolio) is not None
+    assert sent == tt.MAX_FLASH_ORDERS
+
+
+@pytest.mark.parametrize("data", [
+    {"symbol": None, "pct": 0.02}, {"symbol": "TSLA", "pct": "big"},
+    {"symbol": "TSLA", "pct": float("nan")}, {"symbol": "TSLA", "pct": 0},
+    {"symbol": "TSLA", "pct": True}, {"pct": 0.02}, {}])
+def test_a_malformed_flash_is_ignored(data):
+    bot, market, portfolio = week7_bot()
+    bot.on_event("FLASH", "flash", data)
+    assert bot.take_flash(market, portfolio) is None
+    assert bot.on_tick(market, portfolio) is None
+
+
+def test_no_liquidity_taking_on_an_expensive_venue():
+    """200 bp to take: no seeds, no heartbeat, no earnings buys — nothing."""
+    bot, market, portfolio = week7_bot()
+    earnings(bot, "TSLA", 0.08)
+    assert ticks(bot, market, portfolio, 5_000) == []
+    assert bot.orders_sent == 0
+
+
+def test_taking_is_off_until_the_fee_is_known(monkeypatch):
+    monkeypatch.setattr(tt, "DEFAULT_TAKER_FEE", None)
+    bot, market, portfolio = MyTrader(), FakeMarket(), FakePortfolio()
+    assert ticks(bot, market, portfolio, SEED_TICKS) == []
+    bot.on_event("FEE_SCHEDULE", "cheap", {"taker": 0.0008, "rebate": 0.0005})
+    assert len(ticks(bot, market, portfolio, SEED_TICKS)) == len(TRADABLE)
+    bot.on_event("FEE_SCHEDULE", "repriced", HOUSE)
+    assert ticks(bot, market, portfolio, tt.HEARTBEAT_TICKS * 5) == []
+
+
+def test_hot_path_is_constant_time_and_never_reads_the_history():
+    """Week 7: snapshots every 0.2 s. on_tick must not scan anything.
+
+    The market's history accessor raises if touched, and a tick is timed:
+    the budget is 50 µs, against a 200 000 µs gap between snapshots.
+    """
+    import time as _time
+    bot, market, portfolio = week7_bot()
+
+    def no_history(symbol):
+        raise AssertionError("the hot path read the price history")
+
+    market.prices = no_history
+    bot.on_event("TRADING_HALT", "halt", {"symbol": "AMD", "duration": 300})
+    ticks(bot, market, portfolio, 2_000)            # warm
+    n = 50_000
+    started = _time.perf_counter()
+    for _ in range(n):
+        bot.on_tick(market, portfolio)
+    per_tick = (_time.perf_counter() - started) / n
+    assert per_tick < 50e-6, f"on_tick takes {per_tick * 1e6:.1f} µs"
+
+    # ...and a flash is turned into an order in constant time too.
+    started = _time.perf_counter()
+    for _ in range(200):
+        bot.pending_flash = {"symbol": "TSLA", "pct": -0.02,
+                             "start": 240.0, "at": bot._now()}
+        bot.flash_orders = 0
+        assert bot._flash_signal(market, portfolio) is not None
+    assert (_time.perf_counter() - started) / 200 < 2e-3
 
 
 # ── SDK wiring (the real adapter) ───────────────────────────────────────
@@ -491,6 +712,34 @@ def test_sdk_sends_the_ipo_subscription():
     assert len(sent) == 1 and isinstance(sent[0], IPOSubscribe)
     assert (sent[0].symbol, sent[0].quantity, sent[0].max_price) == (
         "VLTA", tt.IPO_SHARES, 50.0)
+
+
+def test_sdk_answers_a_flash_from_inside_the_event_handler(monkeypatch):
+    monkeypatch.setattr(tt._engine_config, "TEAM_ID",
+                        "butter_chicken_pasta_trader_1")
+    bot, sent = sdk_bot()
+    bot._session_open = True
+    bot._on_leaderboard(leaderboard(
+        [{"team_id": "butter_chicken_pasta_trader_1", "cash": 248_000.0,
+          "positions": {"TSLA": 40, "AAPL": 40}}]))
+    event(bot, "FEE_SCHEDULE", {"taker": 0.02, "rebate": -0.005})
+    event(bot, "FLASH", {"symbol": "TSLA", "pct": -0.021, "revert_ticks": 2,
+                         "tick": 500, "start_price": 240.0})
+    event(bot, "FLASH", {"symbol": "AAPL", "pct": 0.018, "revert_ticks": 2,
+                         "tick": 650, "start_price": 220.0})
+    assert [type(m) for m in sent] == [PlaceOrder, PlaceOrder]
+    assert [(m.symbol, m.side, m.quantity, m.order_type, m.price) for m in sent] == [
+        ("TSLA", "buy", 1, "limit", 234.96), ("AAPL", "sell", 1, "limit", 223.96)]
+    assert all(m.team_id == "butter_chicken_pasta_trader_1" for m in sent)
+    # the trading loop's next tick must not answer the same flash again
+    assert bot.strategy.generate_signal(FakeMarket(), bot.portfolio) is None
+
+
+def test_sdk_no_flash_order_while_the_session_is_closed():
+    bot, sent = sdk_bot()
+    bot._session_open = False
+    event(bot, "FLASH", {"symbol": "TSLA", "pct": -0.02, "start_price": 240.0})
+    assert sent == []
 
 
 def test_sdk_session_closed_sends_no_orders():

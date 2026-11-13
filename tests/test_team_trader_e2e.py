@@ -66,12 +66,16 @@ class Wire:
         self.seat = seat
         self.inbox: list[str] = []
         self.errors: list[dict] = []
+        self.flashes: list[tuple] = []
 
     # venue -> seat (the server awaits client.send(json))
     async def send(self, data: str) -> None:
         self.inbox.append(data)
         if '"type":"error"' in data:
             self.errors.append(json.loads(data))
+        elif '"event":"FLASH"' in data:
+            self.flashes.append((self.seat.arena.server.tick,
+                                 json.loads(data)["data"]))
 
     # the real TraderBot.listen() does `async for raw in self._ws`
     def __aiter__(self):
@@ -99,7 +103,7 @@ class Uplink:
             msg = PlaceOrder.model_validate(raw)
             seat.orders.append((server.tick, msg.symbol, msg.side,
                                 msg.quantity, msg.order_type,
-                                seat.phase()))
+                                seat.phase(), msg.price))
             await server._handle_place_order(wire, msg, seat.team_id)
         elif raw["type"] == "ipo_subscribe":
             msg = IPOSubscribe.model_validate(raw)
@@ -167,6 +171,7 @@ def week6(monkeypatch, tmp_path):
     # The real exchange writes an end-of-day report at the close: keep it
     # out of the repository.
     monkeypatch.setenv("REPORTS_DIR", str(tmp_path / "reports"))
+    monkeypatch.setattr(tt, "DEFAULT_TAKER_FEE", 0.001)   # a cheap venue
     saved = {k: getattr(xconfig, k) for k in (
         "OPENING_AUCTION_TICKS", "CLOSING_AUCTION", "CLOSING_AUCTION_TICKS",
         "LULD_BAND_PCT", "SSR_TRIGGER_PCT", "SHORT_LOCATE_CAP",
@@ -273,3 +278,81 @@ def test_week6_block_against_the_real_exchange(week6):
     # ── the bot's own book agrees with the venue's ──
     assert seat.bot.portfolio.positions == {
         s: q for s, q in portfolio.positions.items()}
+
+
+# ── week 7: the real season/week07.json — fast market, quotas, flashes ──
+
+@pytest.fixture
+def week7(monkeypatch, tmp_path):
+    monkeypatch.setattr(tconfig, "TEAM_ID", SEAT)
+    monkeypatch.setenv("TEAM_ID", SEAT)
+    monkeypatch.setenv("REPORTS_DIR", str(tmp_path / "reports"))
+    saved = {k: getattr(xconfig, k) for k in (
+        "OPENING_AUCTION_TICKS", "CLOSING_AUCTION", "CLOSING_AUCTION_TICKS",
+        "LULD_BAND_PCT", "SSR_TRIGGER_PCT", "SHORT_LOCATE_CAP",
+        "MAINTENANCE_FRACTION", "POSITION_LIMIT_SHARES",
+        "SNAPSHOT_INTERVAL_SEC")}
+    seat = SeatSim(SEAT)
+    bots = [seat]
+    bots += [PassiveMarketMaker(f"mm_{i}", quote_size=40) for i in range(3)]
+    bots += [NoiseTrader(f"noise_{i}", trade_prob=0.05, size=3)
+             for i in range(4)]
+    arena = HeadlessArena(
+        bots, seed=11,
+        scenario=scenario_mod.load_scenario("season/week07.json"))
+    seat.plug_in()
+    yield arena, seat
+    arena.server.scenario.restore()
+    for key, value in saved.items():
+        setattr(xconfig, key, value)
+
+
+def test_week7_flashes_against_the_real_exchange(week7):
+    arena, seat = week7
+    server = arena.server
+    owner = seat.bot._owner
+    assert server.scenario.week == 7 and server.quota_for(SEAT) == 8
+
+    async def block():
+        owner.on_connect()
+        seat.bot._on_leaderboard(server._build_leaderboard())
+        owner.on_scenario(server.scenario.to_dict())
+        # What the house venue publishes at connect since Nov 6.
+        owner.on_event("FEE_SCHEDULE", "house", {"taker": 0.02, "rebate": -0.005})
+        await arena.open_session()
+        await seat.pump()
+        await arena.run(1300)               # ~8 flashes, TSLA + AAPL earnings
+        await arena.close_session()
+        await seat.pump()
+        await arena.run(5)
+
+    asyncio.run(block())
+    flashes = seat.wire.flashes
+    assert len(flashes) >= 5, "the scenario should have fired several flashes"
+
+    # ── every flash answered: one order, that symbol, the same tick ──
+    for tick, data in flashes:
+        answers = [o for o in seat.orders
+                   if o[1] == data["symbol"] and 0 <= o[0] - tick <= 1]
+        assert len(answers) == 1, (tick, data, seat.orders)
+        _, _, side, qty, order_type, phase, price = answers[0]
+        assert qty == 1 and order_type == "limit" and phase == "open"
+        start, pct = data["start_price"], data["pct"]
+        if side == "sell":                  # only ever on an up-flash
+            assert pct > 0 and price >= start * (1 + abs(pct)) - 0.011
+        else:
+            assert price <= start * (1 - abs(pct)) + 0.011
+    assert owner.flash_orders == owner.flashes_seen == len(flashes)
+
+    # ── and nothing else: no taking at 200 bp, no cancels, no rejections ──
+    assert len(seat.orders) == len(flashes)
+    assert seat.wire.errors == [], seat.wire.errors
+    assert seat.errors == [], seat.errors
+    assert owner.orders_sent == 0
+
+    # ── risk ──
+    portfolio = seat.portfolio
+    assert not portfolio.liquidated
+    assert min(portfolio.positions.values(), default=0) >= 0    # never short
+    assert max(seat.max_position.values(), default=0) <= 1000
+    assert portfolio.cash >= 0
