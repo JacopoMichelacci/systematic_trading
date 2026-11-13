@@ -1,7 +1,9 @@
 """Run every seat for a live block and keep it connected.
 
-    python -m team.run_block               # 3 traders + the broker seat
-    python -m team.run_block --no-broker   # traders only
+    python -m team.run_block               # every seat on every venue
+    python -m team.run_block --house-only  # the house venue only
+    python -m team.run_block --venues 8770,8773   # house + these team venues
+    python -m team.run_block --no-broker   # trader seats only
     python -m team.run_block --start-at 15:15 --stop-at 16:35
                                            # unattended: wait, run, stop
     Ctrl-C                                 # stops everything cleanly
@@ -15,7 +17,14 @@ Every seat, the broker seat included, runs team.trader: the broker does not
 quote in graded blocks yet, but it answers flashes like the others (the venue
 takes each seat's role from the roster, not from the bot).
 
-Each seat is its own process (the engine reads TEAM_ID at import). The
+Venues: the house venue (the address in .env) plus the four team venues,
+which live at wss://feed-<port>.<arena host>. A flash is drawn per venue and
+is graded "on that venue", so each seat runs once per venue. Every copy only
+answers flashes: liquidity-taking stays off (BCP_TAKING is not set), also on
+the venues where it would be cheap.
+
+Each seat on each venue is its own process (the engine reads TEAM_ID and
+EXCHANGE_URL at import). The
 engine already reconnects by itself when the socket drops; this supervisor
 covers what it cannot: a process that dies is started again, and on macOS
 the machine is kept awake for as long as the supervisor runs.
@@ -44,12 +53,41 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 LOGS = ROOT / "logs"
 RESTART_DELAY_SEC = 2.0
 STATUS_EVERY_SEC = 30.0
+# The four student-run venues (dashboard venue list, /api/venues).
+TEAM_VENUE_PORTS = (8767, 8769, 8770, 8773)
+
+
+def house_url() -> str:
+    """EXCHANGE_URL from the shell, else from .env (as the engine resolves it)."""
+    url = os.environ.get("EXCHANGE_URL", "").strip()
+    env_file = ROOT / ".env"
+    if not url and env_file.exists():
+        for line in env_file.read_text().splitlines():
+            key, _, value = line.partition("=")
+            if key.strip() == "EXCHANGE_URL":
+                url = value.strip().strip('"').strip("'")
+    return url
+
+
+def venue_urls(house: str, ports) -> dict[str, str]:
+    """{tag: url} for the team venues: wss://feed.<host> -> wss://feed-<port>.<host>.
+
+    Empty when the house address is not the hosted arena's (local play)."""
+    prefix = "wss://feed."
+    if not house.startswith(prefix):
+        return {}
+    return {str(port): f"wss://feed-{port}.{house[len(prefix):]}"
+            for port in ports}
 
 
 class Seat:
-    def __init__(self, team_id: str, module: str) -> None:
+    def __init__(self, team_id: str, module: str, venue: str = "",
+                 url: str = "") -> None:
         self.team_id = team_id
         self.module = module
+        self.venue = venue              # "" = the house venue
+        self.url = url
+        self.name = f"{team_id}@{venue}" if venue else team_id
         self.proc: subprocess.Popen | None = None
         self.starts = 0
         self.started_at = 0.0
@@ -59,27 +97,33 @@ class Seat:
         env = dict(os.environ)
         env["TEAM_ID"] = self.team_id
         env["PYTHONUNBUFFERED"] = "1"
+        env.pop("BCP_TAKING", None)         # flash-only on every venue
+        if self.venue:
+            env["EXCHANGE_URL"] = self.url  # the shell wins over .env
+            env["BCP_VENUE"] = self.venue   # names this copy's log file
+        else:
+            env.pop("BCP_VENUE", None)
         # The trading loop is only the fallback path for a flash (the order
         # normally leaves from the event handler); keep it as fast as the
         # fast-market feed. on_tick is O(1), so this costs nothing.
         env.setdefault("TICK_INTERVAL", "0.2")
         env["PYTHONPATH"] = os.pathsep.join(
             ["engine", ".", env.get("PYTHONPATH", "")]).rstrip(os.pathsep)
-        with open(LOGS / f"console_{self.team_id}.log", "ab") as console:
+        with open(LOGS / f"console_{self.name}.log", "ab") as console:
             self.proc = subprocess.Popen(
                 [sys.executable, "-m", self.module], cwd=ROOT, env=env,
                 stdout=console, stderr=subprocess.STDOUT,
                 start_new_session=True)     # our Ctrl-C must not hit it directly
         self.starts += 1
         self.started_at = time.time()
-        print(f"[{time.strftime('%H:%M:%S')}] started {self.team_id} "
+        print(f"[{time.strftime('%H:%M:%S')}] started {self.name} "
               f"(pid {self.proc.pid}, start #{self.starts})", flush=True)
 
     def poll(self) -> None:
         """Start the seat, or restart it if the process has died."""
         now = time.time()
         if self.proc is not None and self.proc.poll() is not None:
-            print(f"[{time.strftime('%H:%M:%S')}] {self.team_id} exited with "
+            print(f"[{time.strftime('%H:%M:%S')}] {self.name} exited with "
                   f"code {self.proc.returncode} after "
                   f"{now - self.started_at:.0f}s — restarting", flush=True)
             self.proc = None
@@ -100,7 +144,7 @@ class Seat:
             self.proc.kill()
 
     def status(self) -> str:
-        log = LOGS / f"{self.team_id}.log"
+        log = LOGS / f"{self.name}.log"
         connected = "no log yet"
         rejects = 0
         orders = 0
@@ -127,7 +171,7 @@ class Seat:
             answered = sum("FLASH ORDER" in ln for ln in tail)
             last = lines[-1][:8] if lines else ""
         alive = self.proc is not None and self.proc.poll() is None
-        return (f"{self.team_id:<34} {'up' if alive else 'DOWN':<4} "
+        return (f"{self.name:<39} {'up' if alive else 'DOWN':<4} "
                 f"{connected:<19} starts={self.starts} orders={orders:<3} "
                 f"flashes={answered}/{flashes} rejections={rejects} "
                 f"last_log={last}")
@@ -152,9 +196,26 @@ def main() -> None:
     stop_at = _clock_arg("--stop-at")
     if stop_at is not None and stop_at <= max(time.time(), start_at or 0):
         sys.exit("--stop-at is not after now / --start-at — nothing to run")
-    seats = [Seat(bot, "team.trader") for bot in TRADER_IDS]
+    bots = list(TRADER_IDS)
     if "--no-broker" not in sys.argv:
-        seats += [Seat(bot, "team.trader") for bot in BROKER_IDS]
+        bots += list(BROKER_IDS)
+    ports: tuple = TEAM_VENUE_PORTS
+    if "--house-only" in sys.argv:
+        ports = ()
+    elif "--venues" in sys.argv:
+        try:
+            ports = tuple(int(p) for p in
+                          sys.argv[sys.argv.index("--venues") + 1].split(","))
+        except (IndexError, ValueError):
+            sys.exit("--venues needs ports like 8770,8773")
+    venues = venue_urls(house_url(), ports)
+    if ports and not venues:
+        print("Not the hosted arena (EXCHANGE_URL is not wss://feed.…): "
+              "running the house venue only.", flush=True)
+    seats = [Seat(bot, "team.trader") for bot in bots]
+    for tag, url in venues.items():
+        seats += [Seat(bot, "team.trader", tag, url) for bot in bots]
+    print("Venues: house" + "".join(f", {t}" for t in venues), flush=True)
 
     awake = None
     if sys.platform == "darwin" and shutil.which("caffeinate"):

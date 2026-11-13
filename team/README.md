@@ -32,9 +32,17 @@ see `from arena import Trader, Broker, Exchange`.
 One machine only (two processes with the same bot id fight over the
 connection). From the repo root, with the virtualenv active:
 
-    python -m team.run_block                                  # all four seats
+    python -m team.run_block                                  # 4 seats x 5 venues
     python -m team.run_block --start-at 15:15 --stop-at 16:35  # unattended
-    python -m team.run_block --no-broker                       # traders only
+    python -m team.run_block --house-only                      # house venue only
+    python -m team.run_block --venues 8770,8773                # house + these
+    python -m team.run_block --no-broker                       # trader seats only
+
+Venues: the house venue (the address in `.env`) plus the four team venues at
+`wss://feed-<port>.algoarena-st.duckdns.org` (8767, 8769, 8770, 8773). Each
+seat runs once per venue because flashes are drawn, and graded, per venue.
+Every copy only answers flashes; liquidity-taking is off unless `BCP_TAKING=1`.
+Team-venue logs are `logs/<bot id>@<port>.log`.
 
 Start it before the block (connect before the 15:40 open) and leave it until
 the block has ended; Ctrl-C stops every seat. It restarts a seat whose process

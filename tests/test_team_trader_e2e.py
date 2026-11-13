@@ -172,6 +172,7 @@ def week6(monkeypatch, tmp_path):
     # out of the repository.
     monkeypatch.setenv("REPORTS_DIR", str(tmp_path / "reports"))
     monkeypatch.setattr(tt, "DEFAULT_TAKER_FEE", 0.001)   # a cheap venue
+    monkeypatch.setattr(tt, "TAKING_ENABLED", True)
     saved = {k: getattr(xconfig, k) for k in (
         "OPENING_AUCTION_TICKS", "CLOSING_AUCTION", "CLOSING_AUCTION_TICKS",
         "LULD_BAND_PCT", "SSR_TRIGGER_PCT", "SHORT_LOCATE_CAP",

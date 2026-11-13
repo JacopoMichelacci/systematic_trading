@@ -26,11 +26,13 @@ import team.trader as tt
 from team.passive_broker import PassiveBroker
 from team.trader import TRADABLE, MyTrader, _SeatBot
 
+
 @pytest.fixture(autouse=True)
 def _cheap_venue(monkeypatch):
     """Weeks 3–6 behaviour is tested on a venue where taking is cheap; the
     week-7 tests set the house venue's 200 bp themselves."""
     monkeypatch.setattr(tt, "DEFAULT_TAKER_FEE", 0.001)
+    monkeypatch.setattr(tt, "TAKING_ENABLED", True)
 
 
 PRICES = {"MSFT": 400.0, "INTC": 24.0, "AAPL": 220.0, "NVDA": 110.0,
@@ -647,6 +649,28 @@ def test_taking_is_off_until_the_fee_is_known(monkeypatch):
     assert len(ticks(bot, market, portfolio, SEED_TICKS)) == len(TRADABLE)
     bot.on_event("FEE_SCHEDULE", "repriced", HOUSE)
     assert ticks(bot, market, portfolio, tt.HEARTBEAT_TICKS * 5) == []
+
+
+def test_taking_is_off_on_a_cheap_venue_unless_asked_for(monkeypatch):
+    """The seats also run on the 8–14 bp team venues: flash-only there too."""
+    monkeypatch.setattr(tt, "TAKING_ENABLED", False)
+    bot, market, portfolio = MyTrader(), FakeMarket(), FakePortfolio()
+    bot.on_event("FEE_SCHEDULE", "team venue", {"taker": 0.0008, "rebate": 0.0005})
+    earnings(bot, "TSLA", 0.08)
+    assert ticks(bot, market, portfolio, 5_000) == []
+    flash(bot, "TSLA", -0.02)
+    assert bot.take_flash(market, portfolio).side == "buy"   # flashes still answered
+
+
+def test_run_block_builds_one_seat_per_bot_and_venue():
+    import team.run_block as rb
+    urls = rb.venue_urls("wss://feed.algoarena-st.duckdns.org", rb.TEAM_VENUE_PORTS)
+    assert urls == {str(p): f"wss://feed-{p}.algoarena-st.duckdns.org"
+                    for p in (8767, 8769, 8770, 8773)}
+    assert rb.venue_urls("ws://localhost:8765", rb.TEAM_VENUE_PORTS) == {}
+    seat = rb.Seat("bot_1", "team.trader", "8770", urls["8770"])
+    assert seat.name == "bot_1@8770"
+    assert rb.Seat("bot_1", "team.trader").name == "bot_1"
 
 
 def test_hot_path_is_constant_time_and_never_reads_the_history():

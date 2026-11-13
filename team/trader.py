@@ -100,6 +100,11 @@ MAX_EVENT_WAIT_TICKS = 600          # drop an unfillable earnings event
 # is at most this (a fraction of notional). Unknown fee = do not take.
 MAX_TAKER_FEE = 0.005
 DEFAULT_TAKER_FEE: float | None = None
+# ...and only when asked for: BCP_TAKING=1 in the environment. Off by default
+# since the seats also run on the cheap team venues (8–14 bp), where the fee
+# rule alone would switch the seed basket and heartbeat on.
+TAKING_ENABLED = os.environ.get("BCP_TAKING", "").lower() in (
+    "1", "true", "on", "yes")
 
 # ── flashes (week 7) ────────────────────────────────────────────────────
 # A flash: one symbol jumps pct (1.5–2.5%) and walks back within ~2 ticks.
@@ -484,7 +489,8 @@ class MyTrader(Trader):
             return None
 
         # Liquidity-taking strategies: only where taking is cheap enough.
-        if self.taker_fee is None or self.taker_fee > MAX_TAKER_FEE:
+        if (not TAKING_ENABLED or self.taker_fee is None
+                or self.taker_fee > MAX_TAKER_FEE):
             return None
         for step in (self._resume_step, self._earnings_step, self._seed_step,
                      self._heartbeat_step):
@@ -568,9 +574,11 @@ class MyTrader(Trader):
                     and taker != self.taker_fee):
                 self.taker_fee = float(taker)
                 logger.info("TAKER FEE %.0f bp -> liquidity-taking strategies "
-                            "%s (limit %.0f bp)", taker * 1e4,
-                            "ON" if taker <= MAX_TAKER_FEE else "OFF",
-                            MAX_TAKER_FEE * 1e4)
+                            "%s (fee limit %.0f bp, BCP_TAKING %s)",
+                            taker * 1e4,
+                            "ON" if TAKING_ENABLED and taker <= MAX_TAKER_FEE
+                            else "OFF", MAX_TAKER_FEE * 1e4,
+                            "set" if TAKING_ENABLED else "not set")
         elif event == "WEEK_CHANGED":
             self.on_scenario(data)
 
@@ -808,11 +816,13 @@ def _setup_logging() -> None:
     log_dir = pathlib.Path("logs")
     log_dir.mkdir(exist_ok=True)
     team_id = os.environ.get("TEAM_ID", "trader")
+    venue = os.environ.get("BCP_VENUE", "")     # set by run_block per venue
+    name = f"{team_id}@{venue}" if venue else team_id
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s %(levelname)-7s %(name)s: %(message)s",
         datefmt="%H:%M:%S",
-        handlers=[logging.StreamHandler(), logging.FileHandler(log_dir / f"{team_id}.log")],
+        handlers=[logging.StreamHandler(), logging.FileHandler(log_dir / f"{name}.log")],
         force=True,
     )
     logging.getLogger("trader.trader").setLevel(logging.DEBUG)
